@@ -77,7 +77,7 @@ class OrganizationController extends Controller
         }
 
         try {
-            // send API 
+            // send API
             $data = $this->organization->postRequest($this->endpoint, $body);
 
             // Send DB
@@ -122,7 +122,7 @@ class OrganizationController extends Controller
         $title = 'Edit' . ' ' . $this->prefix;
         $organization = Organization::where('organization_id', $organization_id)->first();
 
-        // get identifier value 
+        // get identifier value
         $data =  $this->organization->getRequest($this->endpoint . '/' . $organization_id);
         $identifierValue = $data['identifier'][0]['value'];
         $typeCode = $data['type'][0]['coding'][0]['code'];
@@ -166,7 +166,7 @@ class OrganizationController extends Controller
         $url = $this->endpoint . '/' . $body['id'];
 
         try {
-            // send API 
+            // send API
             $data = $this->organization->patchRequest($url, $body);
 
             // Send DB

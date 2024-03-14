@@ -26,23 +26,23 @@ class UserRolePermissionSeeder extends Seeder
         ];
 
         $it = User::create(array_merge([
-            'email' => 'itrsumm08@gmail.com',
-            'name'  => 'IT RSUMM',
+            'email' => 'itrsudprovsumsel@gmail.com',
+            'name'  => 'IT RSUD',
         ], $default_user_value));
 
         $perawat = User::create(array_merge([
             'email' => 'perawat@gmail.com',
-            'name'  => 'PERAWAT RSUMM',
+            'name'  => 'PERAWAT RSUD',
         ], $default_user_value));
 
         $dokter = User::create(array_merge([
             'email' => 'dokter@gmail.com',
-            'name'  => 'DOKTER RSUMM',
+            'name'  => 'DOKTER RSUD',
         ], $default_user_value));
 
         $manager = User::create(array_merge([
             'email' => 'manager@gmail.com',
-            'name'  => 'MANAGER RSUMM',
+            'name'  => 'MANAGER RSUD',
         ], $default_user_value));
 
         $role_it = Role::create(['name' => 'it']);

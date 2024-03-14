@@ -25,11 +25,23 @@ class LocationDTO
                 'coding_display' => 'Level',
                 'keterangan' => 'Lantai di Gedung/Struktur'
             ],
+            'wa' => [
+                'coding_system' => 'http://terminology.hl7.org/CodeSystem/location-physical-type',
+                'coding_code' => 'wa',
+                'coding_display' => 'Ward',
+                'keterangan' => 'Bangsal adalah bagian dari fasilitas medis yang mungkin berisi ruangan dan jenis lokasi lainnya.'
+            ],
             'ro' => [
                 'coding_system' => 'http://terminology.hl7.org/CodeSystem/location-physical-type',
                 'coding_code' => 'ro',
                 'coding_display' => 'Room',
                 'keterangan' => 'Sebuah ruangan yang dialokasikan sebagai ruangan'
+            ],
+            'bd' => [
+                'coding_system' => 'http://terminology.hl7.org/CodeSystem/location-physical-type',
+                'coding_code' => 'bd',
+                'coding_display' => 'bed',
+                'keterangan' => 'Tempat tidur yang dapat ditempati'
             ],
         ];
     }

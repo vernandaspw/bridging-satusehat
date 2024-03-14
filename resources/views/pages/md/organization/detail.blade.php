@@ -67,7 +67,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-12 col-md-6">
+                                    {{-- <div class="col-12 col-md-6">
                                         <div class="row">
                                             <div class="col-md-4">
                                                 Country
@@ -94,7 +94,7 @@
                                                 {{$organization->updated_at ?? ''}}
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>

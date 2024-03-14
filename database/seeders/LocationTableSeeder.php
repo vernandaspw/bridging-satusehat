@@ -34,36 +34,36 @@ class LocationTableSeeder extends Seeder
             "identifier" => [
                 [
                     "system" => "http://sys-ids.kemkes.go.id/location/" . env('SATU_SEHAT_ORGANIZATION_ID'),
-                    "value" => "RSU Muhammadiyah Metro"
+                    "value" => "RSUD SITI FATIMAH"
                 ]
             ],
             "status" => "active",
-            "name" => "RSU Muhammadiyah Metro",
-            "description" => "Rumah Sakit Umum Muhammadiyah Metro",
+            "name" => "RSUD SITI FATIMAH",
+            "description" => "Rumah Sakit Umum Daerah Provinsi Sumatera Selatan",
             "mode" => "instance",
             "telecom" => [
                 [
                     "system" => "phone",
-                    "value" => "072549490",
+                    "value" => "07115718883",
                     "use" => "work"
                 ],
                 [
                     "system" => "email",
-                    "value" => "itrsumm08@gmail.com",
+                    "value" => "itrsudprovsumsel@gmail.com",
                     "use" => "work"
                 ],
                 [
                     "system" => "url",
-                    "value" => "https://rsumm.co.id",
+                    "value" => "http://rsud.sumselprov.go.id",
                     "use" => "work"
                 ]
             ],
             "address" => [
                 "use" => "work",
                 "line" => [
-                    "Jl. Soekarno Hatta No. 42 Mulyojati 16B Metro Barat Kota Metro"
+                    "Kol. Hj. Burlian Km 4.5, Sumatera Selatan, Indonesia"
                 ],
-                "city" => "Kota Metro",
+                "city" => "Kota Palembang",
                 "postalCode" => "34125",
                 "country" => "ID",
                 "extension" => [
