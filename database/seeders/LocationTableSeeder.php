@@ -99,8 +99,8 @@ class LocationTableSeeder extends Seeder
             ]
         ];
 
-    //     return $data;
-    // }
+        return $data;
+    }
 
     public function run()
     {
