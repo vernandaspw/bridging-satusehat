@@ -23,13 +23,13 @@ class Dokter extends Model
     public function getData()
     {
         try {
-            $request = $this->httpClient->get('https://daftar.rsumm.co.id/api.simrs/dokter');
+            // $request = $this->httpClient->get('https://daftar.rsumm.co.id/api.simrs/dokter');
 
-            // $request = $this->httpClient->get('http://si-master.sifa.co.id/api/dokter',[
-            //     'headers' => [
-            //         'X-TOKEN' => 'qxmydJJbR5EH4frauY2EG0M1FPLljjaJ35gaOkBHLUAW4Hcbr1lsL0pX0TppZzZT'
-            //     ]
-            // ]);
+            $request = $this->httpClient->get('http://localhost:5000/sifa-si-master/api/dokter',[
+                'headers' => [
+                    'X-TOKEN' => env('SIFA_MASTER_TOKEN')
+                ]
+            ]);
             $response = $request->getBody()->getContents();
             $data = json_decode($response, true);
 

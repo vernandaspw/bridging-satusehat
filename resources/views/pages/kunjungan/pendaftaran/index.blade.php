@@ -54,6 +54,7 @@
                                         <option value="" selected disabled>-- Silahkan pilih --</option>
                                         <option value="RAWAT JALAN" {{ request('status_rawat') ? 'selected' : '' }}>Rawat Jalan</option>
                                         <option value="RAWAT INAP">Rawat Inap</option>
+                                        <option value="ER">ER</option>
                                     </select>
                                 </div>
                             </div>
@@ -98,8 +99,12 @@
                                 <td>
                                     @if ($item['status_rawat'] == 'RAWAT JALAN')
                                     <div class="badge badge-success">RJ</div>
+                                    @elseif ($item['status_rawat'] == 'RAWAT INAP')
+                                    <div class="badge badge-success">RI</div>
+                                    @elseif ($item['status_rawat'] == 'ER')
+                                    <div class="badge badge-success">ER</div>
                                     @else
-                                    <div class="badge badge-info">RI</div>
+                                    <div class="badge badge-info">Lainnya</div>
                                     @endif
                                 </td>
                                 <td>{{ $item['nama_rekanan'] }}</td>

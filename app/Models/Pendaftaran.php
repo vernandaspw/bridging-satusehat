@@ -35,9 +35,16 @@ class Pendaftaran extends Model
                 $queryParams['status_rawat'] = $status_rawat;
             }
             // Mengirim permintaan HTTP dengan query parameters
-            $request = $this->httpClient->get('https://daftar.rsumm.co.id/api.simrs/pendaftaran', [
+            $request = $this->httpClient->get('http://localhost:5000/sifa-si-master/api/registration', [
+                'headers' => [
+                    'X-TOKEN' => env('SIFA_MASTER_TOKEN')
+                ],
                 'query' => $queryParams,
             ]);
+
+            // $request = $this->httpClient->get('https://daftar.rsumm.co.id/api.simrs/pendaftaran', [
+            //     'query' => $queryParams,
+            // ]);
 
             // Mengambil respons dari API
             $response = $request->getBody()->getContents();

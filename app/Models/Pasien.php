@@ -19,7 +19,7 @@ class Pasien extends Model
         ]);
     }
 
-    public function getData($no_mr = null, $no_bpjs = null, $nik = null, $nama = null)
+    public function getData($no_mr = null, $no_bpjs = null, $nik = null, $nama = null, $take = null)
     {
         try {
             // Menyiapkan query parameters
@@ -36,10 +36,20 @@ class Pasien extends Model
             if ($nama !== null) {
                 $queryParams['nama'] = $nama;
             }
+            if ($take !== null) {
+                $queryParams['take'] = $take;
+            }
             // Mengirim permintaan HTTP dengan query parameters
-            $request = $this->httpClient->get('https://daftar.rsumm.co.id/api.simrs/pasien', [
+            $request = $this->httpClient->get('http://localhost:5000/sifa-si-master/api/pasien', [
+                'headers' => [
+                    'X-TOKEN' => env('SIFA_MASTER_TOKEN')
+                ],
                 'query' => $queryParams,
             ]);
+
+            // $request = $this->httpClient->get('https://daftar.rsumm.co.id/api.simrs/pasien', [
+            //     'query' => $queryParams,
+            // ]);
 
             // Mengambil respons dari API
             $response = $request->getBody()->getContents();
