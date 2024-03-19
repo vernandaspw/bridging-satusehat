@@ -52,7 +52,7 @@ class PatientService
                 'Accept' => 'application/json',
             ],
         ]);
-
+        
         $data = $response->getBody()->getContents();
         return json_decode($data, true);
     }

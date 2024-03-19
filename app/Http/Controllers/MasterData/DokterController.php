@@ -38,6 +38,29 @@ class DokterController extends Controller
         }
     }
 
+    function getIHS($kodeDokter) {
+        try {
+            $params = [
+                'identifier' => $this->dokter->getNik($kodeDokter)
+            ];
+            // kirem data ke satu sehat berdasarkan nik
+            $practitionerSatuSehat = $this->practicionerSatuSehat->getRequest($this->endpoint, $params);
+            $kodeIHS = $practitionerSatuSehat['entry'][0]['resource']['id'];
+
+            // updateIHS
+             $this->dokter->updateIHS($kodeDokter, $kodeIHS);
+
+            // Menggunakan model Dokter untuk mencari data berdasarkan kode dokter
+
+            return redirect()->back()->with('success', 'berhasil kirim dan mendapatkan kode IHS');
+        } catch (\Exception $e) {
+            // Handle any exceptions that occur during the API request
+            $errorMessage = "NIK salah atau gangguan sementara pada API satusehat, coba ulang";
+            // $errorMessage = "Error: " . $e->getMessage();
+            return redirect()->back()->with('error', $errorMessage);
+        }
+    }
+
     public function edit($kodeDokter)
     {
         try {
@@ -53,12 +76,15 @@ class DokterController extends Controller
 
     public function show($kodeDokter)
     {
+
         try {
             $params = [
                 'identifier' => $this->dokter->getNik($kodeDokter)
             ];
             // kirem data ke satu sehat berdasarkan nik
             $practitionerSatuSehat = $this->practicionerSatuSehat->getRequest($this->endpoint, $params);
+
+            // updateIHS
 
             // Menggunakan model Dokter untuk mencari data berdasarkan kode dokter
             $dokter = $this->dokter->getByKodeDokter($kodeDokter);

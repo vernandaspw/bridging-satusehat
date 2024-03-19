@@ -76,6 +76,8 @@
                                     <th>BPJS</th>
                                     <th>NIK</th>
                                     <th>Gender</th>
+                                    <th>tgl lahir</th>
+                                    <th>IHS</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -96,9 +98,13 @@
                                         <div>P</div>
                                         @endif
                                     </td>
+                                    <td>{{ $item['tanggal_lahir'] }}</td>
+                                    <td>{{ $item['ihs'] }}</td>
                                     <td width="15%">
-                                        <a href="{{ route('patient.show', $item['no_mr'])}}" class="btn btn-info"><i class="fas fa-info-circle"></i></a>
-                                        <a href="http://" class="btn btn-primary">sync</a>
+                                        {{-- <a href="{{ route('patient.show', $item['no_mr'])}}" class="btn btn-info"><i class="fas fa-info-circle"></i></a> --}}
+                                        @if ($item['nik'])
+                                        <a href="{{ route('patient.ihs', $item['no_mr'])}}" class="btn btn-primary">IHS</a>
+                                        @endif
                                     </td>
                                 </tr>
                                 @endforeach

@@ -41,7 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    // MASTER DATA 
+    // MASTER DATA
     Route::prefix('md')->middleware('auth')->group(function () {
         // ORGANIZATION
         Route::get('/organization', [OrganizationController::class, 'index'])->name('organization.index');
@@ -55,12 +55,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/patient', [PasienController::class, 'index'])->name('patient.index');
         Route::get('/patient/create', [PasienController::class, 'create'])->name('patient.create');
         Route::get('/patient/{noMr}', [PasienController::class, 'show'])->name('patient.show');
+        Route::get('/patient/{noMr}/ihs', [PasienController::class, 'getIHS'])->name('patient.ihs');
         Route::post('/patient', [PasienController::class, 'store'])->name('patient.store');
 
         // DOKTER
         Route::get('/dokter', [DokterController::class, 'index'])->name('dokter.index');
         Route::get('/dokter/create', [DokterController::class, 'create'])->name('dokter.create');
         Route::get('/dokter/{kode_dokter}/edit', [DokterController::class, 'edit'])->name('dokter.edit');
+        Route::get('/dokter/{kodeDokter}/ihs', [DokterController::class, 'getIHS'])->name('dokter.ihs');
         Route::get('/dokter/{kode_dokter}', [DokterController::class, 'show'])->name('dokter.show');
 
         // LOCATION
@@ -72,7 +74,7 @@ Route::middleware('auth')->group(function () {
         Route::patch('/location/{location_id}', [LocationController::class, 'update'])->name('location.update');
     });
 
-    // CASE 
+    // CASE
     Route::prefix('case')->name('case.')->group(function () {
         Route::get('encounter/create/{noReg}', EncounterCreateController::class)->name('encounter.create');
     });

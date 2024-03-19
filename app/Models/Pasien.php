@@ -40,7 +40,7 @@ class Pasien extends Model
                 $queryParams['take'] = $take;
             }
             // Mengirim permintaan HTTP dengan query parameters
-            $request = $this->httpClient->get('http://localhost:5000/sifa-si-master/api/pasien', [
+            $request = $this->httpClient->get(env('SIFA_MASTER_URL') .'/pasien', [
                 'headers' => [
                     'X-TOKEN' => env('SIFA_MASTER_TOKEN')
                 ],
@@ -58,6 +58,37 @@ class Pasien extends Model
             // Mengembalikan data pasien
             return $data['data']; // Mengambil bagian 'data' dari respons
         } catch (\Exception $e) {
+            // Tangani kesalahan
+            return []; // Mengembalikan array kosong jika terjadi kesalahan
+        }
+    }
+
+    public function updateIHS($norm, $kodeIHS)
+    {
+        try {
+            // dd($norm, $kodeIHS);
+            $request = $this->httpClient->post(env('SIFA_MASTER_URL') .'/pasien/ihs/' . $norm, [
+                'headers' => [
+                    'X-TOKEN' => env('SIFA_MASTER_TOKEN'),
+                ],
+                'body' => json_encode([
+                    'kodeIHS' => $kodeIHS,
+                ]),
+            ]);
+            $response = $request->getBody()->getContents();
+            // dd($response);
+            $statusCode = $request->getStatusCode();
+
+            if ($statusCode == 200) {
+                $result = json_decode($response, true);
+                return $result;
+            } else {
+                // Tangani kesalahan jika status bukan 200 OK
+                // Misalnya, lempar Exception dengan pesan kesalahan yang sesuai
+                throw new \Exception("Failed to update IHS: " . $statusCode);
+            }
+        } catch (\Exception $e) {
+            dd($e->getMessage());
             // Tangani kesalahan
             return []; // Mengembalikan array kosong jika terjadi kesalahan
         }

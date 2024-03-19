@@ -35,7 +35,7 @@ class Pendaftaran extends Model
                 $queryParams['status_rawat'] = $status_rawat;
             }
             // Mengirim permintaan HTTP dengan query parameters
-            $request = $this->httpClient->get('http://localhost:5000/sifa-si-master/api/registration', [
+            $request = $this->httpClient->get(env('SIFA_MASTER_URL') .'/registration', [
                 'headers' => [
                     'X-TOKEN' => env('SIFA_MASTER_TOKEN')
                 ],

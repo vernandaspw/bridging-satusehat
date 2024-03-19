@@ -1,7 +1,7 @@
 <div class="main-sidebar sidebar-style-2">
     <aside id="sidebar-wrapper">
         <div class="sidebar-brand">
-            <a href="index.html">SIMRS</a>
+            <a href="index.html">BRIDGING_SS</a>
         </div>
         <div class="sidebar-brand sidebar-brand-sm">
             <a href="index.html">MR</a>
@@ -38,27 +38,15 @@
                 </ul>
             </li>
             <li class="nav-item dropdown {{ Request::is('kj*') ? 'active' : '' }}">
-                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Kunjungan</span></a>
-                <ul class="dropdown-menu">
-                    <li class="{{ Request::is('kj/pendaftaran') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ route('pendaftaran.index') }}">Pendaftaran</a>
-                    </li>
-                    <li class="{{ Request::is('kj/antrean') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ route('antrean.index') }}">Antrean</a>
-                    </li>
-                </ul>
-            </li>
-            <li class="nav-item dropdown">
                 <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Encounter</span></a>
                 <ul class="dropdown-menu">
-                    <li class="">
-                        <a class="nav-link" href="">Poliklinik</a>
+                    <li class="{{ Request::is('kj/pendaftaran') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('pendaftaran.index') }}">Encounter Condition</a>
                     </li>
-                    <li class="">
-                        <a class="nav-link" href="">IGD</a>
-                    </li>
+
                 </ul>
             </li>
+
             <li class="menu-header">manage</li>
             <li class="nav-item dropdown {{ Request::is('mu**') ? 'active' : '' }}">
                 <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-tasks"></i><span>Manage User</span></a>
@@ -66,7 +54,7 @@
                     <li class="{{ Request::is('mu/user') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('user.index') }}">User</a>
                     </li>
-                    <li class="{{ Request::is('mu/role') ? 'active' : '' }}">
+                    {{-- <li class="{{ Request::is('mu/role') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('role.index') }}">Role</a>
                     </li>
                     <li class="{{ Request::is('mu/permission') ? 'active' : '' }}">
@@ -74,17 +62,17 @@
                     </li>
                     <li class="{{ Request::is('mu/role-permission') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('role-permission.index') }}">Role Permission</a>
-                    </li>
+                    </li> --}}
                 </ul>
             </li>
-            <li class="nav-item dropdown {{ Request::is('mp*') ? 'active' : '' }}">
+            {{-- <li class="nav-item dropdown {{ Request::is('mp*') ? 'active' : '' }}">
                 <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fa-solid fa-group-arrows-rotate ml-1"></i> <span>Mappings</span></a>
                 <ul class="dropdown-menu">
                     <li class="{{ Request::is('mp/encounter*') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('mapping.encounter.index')}}">Encounter</a>
                     </li>
                 </ul>
-            </li>
+            </li> --}}
             <li class="menu-header">Docs</li>
             <li class="nav-item dropdown  {{ Request::is('dc*') ? 'active' : '' }}">
                 <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-rocket"></i><span>Documentation</span></a>

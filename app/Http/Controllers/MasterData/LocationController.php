@@ -109,9 +109,16 @@ class LocationController extends Controller
     public function show($locationId)
     {
         $title = 'Detail' . ' ' . $this->prefix;
-        Location::where('location_id', $locationId)->first();
+        $location = Location::where('location_id', $locationId)->first();
         $dataById =  $this->locationService->getRequest($this->endpoint . '/' . $locationId);
-        return $dataById;
+        // return $dataById['identifier'][0]['value'];
+
+        // update db bridging
+        $location->siteCode = $dataById['identifier'][0]['value'];
+
+
+        $location->save();
+        return redirect()->back();
 
         return view($this->view . 'detail', compact('title'));
     }

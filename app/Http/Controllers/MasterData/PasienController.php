@@ -58,6 +58,40 @@ class PasienController extends Controller
     {
     }
 
+    public function getIHS($norm)
+    {
+        try {
+            $request = $this->pasien->getData($norm);
+            $nik = $request[0]['nik'] ?? null;
+            if (!$nik) {
+                return redirect()->back()->with('NIK tidak ada');
+            }
+            $params = [
+                'identifier' => $nik,
+            ];
+
+            // kirem data ke satu sehat berdasarkan nik
+            // Make request to the API using PatientSatuSehatService
+            $pasien = $this->patientSatuSehat->getRequest($this->endpoint, $params);
+
+            if($pasien['total'] == 0){
+                return redirect()->back()->with('error', 'NIK Tidak ditemukan');
+            }
+
+            $kodeIHS = $pasien['entry'][0]['resource']['id'];
+
+            // updateIHS
+             $this->pasien->updateIHS($norm, $kodeIHS);
+
+            return redirect()->back()->with('success', 'berhasil kirim dan mendapatkan kode IHS');
+        } catch (\Exception $e) {
+            // Handle any exceptions that occur during the API request
+            $errorMessage = "gangguan sementara pada API satusehat, coba ulang";
+            $errorMessage = "Error: " . $e->getMessage();
+            return redirect()->back()->with('error', $errorMessage);
+        }
+    }
+
     public function show($noMr)
     {
         $request = $this->pasien->getData($noMr);
@@ -67,7 +101,7 @@ class PasienController extends Controller
 
         // Prepare parameters for the API request
         $params = [
-            'identifier' => $nik
+            'identifier' => $nik,
         ];
 
         // Make request to the API using PatientSatuSehatService
@@ -75,7 +109,7 @@ class PasienController extends Controller
 
         // Pass the data to the view for rendering
         return view($this->viewPath . 'detail', compact('pasien'));
-        
+
     }
 
     public function edit()

@@ -38,6 +38,7 @@
                                 <th scope="col">Nama Dokter</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">NIK</th>
+                                <th scope="col">IHS</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -55,9 +56,13 @@
                                 <td>{{ $item['nama_dokter'] }}</td>
                                 <td>{{ $item['email'] }}</td>
                                 <td>{{ $item['nik'] }}</td>
+                                <td>{{ $item['ihs'] }}</td>
                                 <td width="15%">
-                                    <a href="{{ route('dokter.edit', $item['kode_dokter'] )}}" class="btn btn-warning"><i class="far fa-edit"></i></a>
-                                    <a href="{{ route('dokter.show', $item['kode_dokter'] )}}" class="btn btn-info"><i class="fas fa-info-circle"></i></a>
+                                    @if ($item['nik'] != '-' && $item['nik'] != '')
+                                    <a href="{{ route('dokter.ihs', $item['kode_dokter'] )}}" class="btn btn-success">IHS</a>
+                                    @endif
+                                    {{-- <a href="{{ route('dokter.edit', $item['kode_dokter'] )}}" class="btn btn-warning"><i class="far fa-edit"></i></a>
+                                    <a href="{{ route('dokter.show', $item['kode_dokter'] )}}" class="btn btn-info"><i class="fas fa-info-circle"></i></a> --}}
                                 </td>
                             </tr>
                             @endforeach

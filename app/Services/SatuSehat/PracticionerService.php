@@ -54,6 +54,7 @@ class PracticionerService
         ]);
 
         $data = $response->getBody()->getContents();
+    
         return json_decode($data, true);
     }
 }

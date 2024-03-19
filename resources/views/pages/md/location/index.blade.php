@@ -37,6 +37,7 @@
                                     </th>
                                     <th>Location ID</th>
                                     <th>Name</th>
+                                    <th>Site Code SIMRS</th>
                                     <th>Organization ID</th>
                                     <th>Description</th>
                                     <th>Updated At</th>
@@ -49,6 +50,7 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $location->location_id}}</td>
                                     <td>{{ $location->name}}</td>
+                                    <td>{{ $location->siteCode}}</td>
                                     <td>
                                         <a href="{{ route('organization.show', $location->organization_id)}}">{{ $location->organization_id}} </a>
                                     </td>
