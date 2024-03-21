@@ -31,6 +31,7 @@
 
     </script>
     <!-- END GA -->
+    @livewireStyles
 </head>
 
 <body>
@@ -45,11 +46,12 @@
             <!-- Content -->
             @yield('main')
 
-            <!-- Footer -->
-            @include('components.footer')
+
         </div>
     </div>
 
+
+    @livewireScripts
     <!-- General JS Scripts -->
     <script src="{{ asset('library/jquery/dist/jquery.min.js') }}"></script>
     <script src="{{ asset('library/popper.js/dist/umd/popper.js') }}"></script>
@@ -64,6 +66,34 @@
     <!-- Template JS File -->
     <script src="{{ asset('js/scripts.js') }}"></script>
     <script src="{{ asset('js/custom.js') }}"></script>
+
+    <script src="{{ asset('lib/sweatalert2/sweetalert2.all.min.js') }}"></script>
+    <script>
+        Livewire.on('success', data => {
+            console.log(data);
+            Swal.fire({
+                position: 'center',
+                title: 'berhasil!',
+                text: data,
+                icon: 'success',
+                confirmButtonText: 'oke'
+                // showConfirmButton: false
+                // , timer: 1500
+            })
+        })
+        Livewire.on('error', data => {
+            console.log(data);
+            Swal.fire({
+                position: 'center',
+                title: 'gagal!',
+                text: data,
+                icon: 'error',
+                confirmButtonText: 'oke'
+                // showConfirmButton: false
+                // , timer: 1500
+            })
+        })
+    </script>
 
     @include('sweetalert::alert')
 

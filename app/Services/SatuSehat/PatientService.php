@@ -17,7 +17,7 @@ class PatientService
         $this->config = new ConfigSatuSehat();
     }
 
-    protected function processParams($params)
+    protected static function processParams($params)
     {
 
         if (isset($params['identifier'])) {
@@ -34,25 +34,25 @@ class PatientService
         return $params;
     }
 
-    public function getRequest($endpoint, $params = [])
+    public static function getRequest($endpoint, $params = [])
     {
-        $token = $this->accessToken->token();
+        $token = AccessToken::token();
 
-        $url = $this->config->setUrl() . $endpoint;
+        $url = ConfigSatuSehat::setUrl() . $endpoint;
 
-        $params = $this->processParams($params);
+        $params = PatientService::processParams($params);
 
         if (!empty($params)) {
             $url .= '?' . http_build_query($params);
         }
-
-        $response = $this->httpClient->get($url, [
+        $httpClient = new Client();
+        $response = $httpClient->get($url, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $token,
                 'Accept' => 'application/json',
             ],
         ]);
-        
+
         $data = $response->getBody()->getContents();
         return json_decode($data, true);
     }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Case\Encounter\EncounterCreate;
 use App\Http\Controllers\Case\Encounter\EncounterCreateController;
 use App\Http\Controllers\DocumentationController;
+use App\Http\Livewire\Encounter\Bundle\EncounterBundlePage;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Kunjungan\AntreanController;
@@ -16,7 +17,9 @@ use App\Http\Controllers\Mapping\MappingEncounterController;
 use App\Http\Controllers\Manage\UserController;
 use App\Http\Controllers\MasterData\LocationController;
 use App\Http\Controllers\MasterData\OrganizationController;
-
+use App\Http\Livewire\Encounter\Bundle\EncounterBundleIgdPage;
+use App\Http\Livewire\Encounter\Bundle\EncounterBundleRajalPage;
+use App\Http\Livewire\Encounter\Bundle\EncounterBundleRanapPage;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,10 +77,13 @@ Route::middleware('auth')->group(function () {
         Route::patch('/location/{location_id}', [LocationController::class, 'update'])->name('location.update');
     });
 
+    // CORE
+    Route::get('encounter/bundle/rajal', EncounterBundleRajalPage::class);
+    Route::get('encounter/bundle/ranap', EncounterBundleRanapPage::class);
+    Route::get('encounter/bundle/igd', EncounterBundleIgdPage::class);
+
     // CASE
-    Route::prefix('case')->name('case.')->group(function () {
-        Route::get('encounter/create/{noReg}', EncounterCreateController::class)->name('encounter.create');
-    });
+        Route::get('case/encounter/create', EncounterCreateController::class)->name('case.encounter.create');
 
 
     // KUNJUNGAN

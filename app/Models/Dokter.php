@@ -24,9 +24,9 @@ class Dokter extends Model
         try {
             // $request = $this->httpClient->get('https://daftar.rsumm.co.id/api.simrs/dokter');
 
-            $request = $this->httpClient->get(env('SIFA_MASTER_URL') .'/dokter', [
+            $request = $this->httpClient->get(env('SIFA_SATUSEHAT_SERVICE_URL') . '/dokter', [
                 'headers' => [
-                    'X-TOKEN' => env('SIFA_MASTER_TOKEN'),
+                    'X-TOKEN' => env('SIFA_SATUSEHAT_SERVICE_TOKEN'),
                 ],
             ]);
             $response = $request->getBody()->getContents();
@@ -77,11 +77,27 @@ class Dokter extends Model
         return $response->json();
     }
 
+    public static function getByKode($kodeDokter)
+    {
+        try {
+            $headers = [
+                'X-TOKEN' =>env('SIFA_SATUSEHAT_SERVICE_TOKEN'),
+            ];
+            $request = Http::withHeaders($headers)->get(env('SIFA_SATUSEHAT_SERVICE_URL') . '/dokter/detail/' . $kodeDokter);
+            $response = $request->getBody()->getContents();
+            $result = json_decode($response, true);
+
+            return $result['data'];
+        } catch (\Throwable $e) {
+            return $e->getMessage();
+        }
+    }
+
     public function getNik($kodeDokter)
     {
-        $request = $this->httpClient->get(env('SIFA_MASTER_URL') .'/dokter/detail/' . $kodeDokter, [
+        $request = $this->httpClient->get(env('SIFA_SATUSEHAT_SERVICE_URL') . '/dokter/detail/' . $kodeDokter, [
             'headers' => [
-                'X-TOKEN' => env('SIFA_MASTER_TOKEN'),
+                'X-TOKEN' => env('SIFA_SATUSEHAT_SERVICE_TOKEN'),
             ],
         ]);
         $response = $request->getBody()->getContents();
@@ -94,9 +110,9 @@ class Dokter extends Model
     {
         try {
             // dd($kodeDokter, $kodeIHS);
-            $request = $this->httpClient->post(env('SIFA_MASTER_URL') .'/dokter/ihs/' . $kodeDokter, [
+            $request = $this->httpClient->post(env('SIFA_SATUSEHAT_SERVICE_URL') . '/dokter/ihs/' . $kodeDokter, [
                 'headers' => [
-                    'X-TOKEN' => env('SIFA_MASTER_TOKEN'),
+                    'X-TOKEN' => env('SIFA_SATUSEHAT_SERVICE_TOKEN'),
                 ],
                 'body' => json_encode([
                     'kodeIHS' => $kodeIHS,

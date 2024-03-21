@@ -1,10 +1,14 @@
 <div class="main-sidebar sidebar-style-2">
     <aside id="sidebar-wrapper">
         <div class="sidebar-brand">
-            <a href="index.html">BRIDGING_SS</a>
+            <a href="">
+                <img src="{{ asset('img/logo.png') }}" width="30" alt="">
+                SIFA-SATUSEHAT
+                <img src="{{ asset('img/SatuSehat.png') }}" width="30" alt="">
+            </a>
         </div>
         <div class="sidebar-brand sidebar-brand-sm">
-            <a href="index.html">MR</a>
+            <a href="">SS</a>
         </div>
         <ul class="sidebar-menu">
             <li class="menu-header">Dashboard</li>
@@ -27,23 +31,31 @@
                         <a class="nav-link" href="{{ route('patient.index') }}">Patient</a>
                     </li>
                     <li class="{{ Request::is('md/dokter*') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ route('dokter.index') }}">Practitioner</a>
+                        <a class="nav-link" href="{{ route('dokter.index') }}">Practitioner(Paramedic)</a>
                     </li>
                     <li class="{{ Request::is('md/organization*') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ route('organization.index') }}">Organization</a>
+                        <a class="nav-link" href="{{ route('organization.index') }}">Organization(ServiceUnit)</a>
                     </li>
                     <li class="{{ Request::is('md/location*') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ route('location.index') }}">Location</a>
+                        <a class="nav-link" href="{{ route('location.index') }}">Location(ServiceRoom)</a>
                     </li>
                 </ul>
             </li>
-            <li class="nav-item dropdown {{ Request::is('kj*') ? 'active' : '' }}">
-                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Encounter</span></a>
+            <li class="nav-item dropdown {{ Request::is('encounter*') ? 'active' : '' }}">
+                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Encounter Bundle</span></a>
                 <ul class="dropdown-menu">
-                    <li class="{{ Request::is('kj/pendaftaran') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ route('pendaftaran.index') }}">Encounter Condition</a>
+                    {{-- <li class="{{ Request::is('kj/pendaftaran') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('pendaftaran.index') }}">TES GET ENCOUNTER ID</a>
+                    </li> --}}
+                    <li class="{{ Request::is('encounter/bundle/rajal') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ url('encounter/bundle/rajal', []) }}">Rawat Jalan</a>
                     </li>
-
+                    <li class="{{ Request::is('encounter/bundle/ranap') ? 'active' : '' }}">
+                        <a class="nav-link text-danger" href="{{ url('encounter/bundle/ranap', []) }}">Rawat Inap</a>
+                    </li>
+                    <li class="{{ Request::is('encounter/bundle/igd') ? 'active' : '' }}">
+                        <a class="nav-link text-danger" href="{{ url('encounter/bundle/igd', []) }}">IGD</a>
+                    </li>
                 </ul>
             </li>
 

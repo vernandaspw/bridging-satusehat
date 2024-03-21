@@ -1,88 +1,97 @@
 <?php
 
-namespace App\Http\Controllers\Case\Encounter;
+namespace App\Http\Livewire\Encounter\Bundle;
 
-use App\Models\Pendaftaran;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\Dokter;
-use App\Models\Encounter;
-use App\Models\Location;
-use App\Models\Mapping\MappingEncounter;
 use App\Models\Pasien;
-use App\Services\SatuSehat\EncounterService;
+use App\Models\Pendaftaran;
+use App\Services\RS\RegistrationService;
 use App\Services\SatuSehat\PatientService;
+use Livewire\Component;
 
-class EncounterCreateController extends Controller
+class EncounterBundleRajalPage extends Component
 {
-    protected $pendaftaran;
-    protected $patientService;
-    protected $mappingEncounter;
-    protected $encounterService;
 
-    public function __construct()
+    public function render()
     {
-        $this->pendaftaran = new Pendaftaran();
-        $this->patientService = new PatientService();
-        $this->mappingEncounter = new MappingEncounter();
-        $this->encounterService = new EncounterService();
+        return view('livewire.encounter.bundle.encounter-bundle-rajal-page')->extends('layouts.app')->section('main');
     }
-    /**
-     * Handle the incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function __invoke(Request $request)
+
+    public function mount()
     {
-        $noReg = $request->noreg;
+        $this->tanggal = date('Y-m-d');
+        $this->fetchData();
+    }
 
-        // fetch detail by no reg
-        $detailPendaftaran = $this->pendaftaran->getByKodeReg($noReg);
-        // dd($detailPendaftaran);
-        if(!empty($detailPendaftaran['ss_encounter_id'])){
-            $errorMessage = 'sudah pernah mengirim encounter';
-            return redirect()->back()->with('error', $errorMessage);
+    public $registrations = [];
+    public $tanggal;
+    public function fetchData($tanggal = null, $page = null)
+    {
+        try {
+            $this->registrations = RegistrationService::getData($tanggal, $page);
+        } catch (\Exception $e) {
+            // Tangani kesalahan
+            return response()->json(['error' => 'Failed to fetch data'], 500);
+            // return view('error-view', ['error' => 'Failed to fetch data']);
         }
-        //   check nik and kode dokter
-        if (empty($detailPendaftaran['nik'])) {
-            $errorMessage = 'nik data is not available.';
-            return redirect()->back()->with('error', $errorMessage);
-        }
+    }
+    public function page($page)
+    {
+        $this->fetchData(null, $page);
+        // dd($this->registrations);
+    }
 
-        if (empty($detailPendaftaran['kode_dokter'])) {
-            $errorMessage = 'Sorry, the patient you are looking for is not registered with any doctor or the search results are ambiguous.';
-            return redirect()->back()->with('error', $errorMessage);
-        }
-        // get nik & kode dokter
+    public function tanggal()
+    {
+        $this->fetchData($this->tanggal, null);
+    }
+
+    public function kirim($noReg)
+    {
+        $detailPendaftaran = RegistrationService::getByKodeReg($noReg);
+        // if (!empty($detailPendaftaran['ss_encounter_id'])) {
+        //     $errorMessage = 'sudah pernah mengirim encounter';
+        //     return redirect()->back()->with('error', $errorMessage);
+        // }
         $nik = $detailPendaftaran['nik'];
-        $kodeDokter = $detailPendaftaran['kode_dokter'];
-        // fetch pasien API by nik
-        $patient =  $this->patientService->getRequest('Patient', ['identifier' => $nik]);
+        //  CEK NIK PASIEN
+        if (empty($nik)) {
+            $errorMessage = 'nik data is not available.';
+            return $this->emit('error', $errorMessage);
+        }
+        // CEK IHS PASIEN
+        $patient = PatientService::getRequest('Patient', ['identifier' => $nik]);
         if (empty($patient['entry'])) {
             $errorMessage = 'The patient has not been registered in SatuSehat.';
-            return redirect()->back()->with('error', $errorMessage);
+            return $this->emit('error', $errorMessage);
         }
-        // get name and ihs number/id
         $patientId = $patient['entry'][0]['resource']['id'];
         $patientName = $patient['entry'][0]['resource']['name'][0]['text'];
 
-        // fetch mapping encounter by kode dokter
-
+        //   CEK KODE DOKTER
+        $kodeDokter = $detailPendaftaran['kode_dokter'];
+        if (empty($kodeDokter)) {
+            $errorMessage = 'Sorry, the patient you are looking for is not registered with any doctor or the search results are ambiguous.';
+            return $this->emit('error', $errorMessage);
+        }
         // CEK IHS DOKTER
         $dokter = Dokter::getByKode($kodeDokter);
         if (empty($dokter['ihs'])) {
             $errorMessage = 'IHS Dokter is not available.';
-            return redirect()->back()->with('error', $errorMessage);
+            return $this->emit('error', $errorMessage);
         }
 
-        // CEK IHS PASIEN
-        $pasien = Pasien::getByNik($nik);
 
+        // CEK IHS PASIEN DI SPHAIRA
+        $pasien = Pasien::getByNik($nik);
         if (empty($pasien['ihs'])) {
             $errorMessage = 'IHS pasien is not available.';
-            return redirect()->back()->with('error', $errorMessage);
+            return $this->emit('error', $errorMessage);
         }
+
+        // CEK LOKASI IHS
+        dd('perlu maping data pada ogranisasi = serviceUnit, location = room');
+
         $location = Location::where('ServiceUnitID', $detailPendaftaran['ServiceUnitID'])->first();
         if (empty($location)) {
             $errorMessage = 'ID location by ServiceUnitID is not available.';
@@ -132,13 +141,13 @@ class EncounterCreateController extends Controller
             //     'created_by' => auth()->user()->id ?? ''
             // ]);
             $encounterID = $resultApi['entry'][0]['response']['resourceID'];
-            if(empty($encounterID)){
+            if (empty($encounterID)) {
                 $errorMessage = 'EncounterID tidak valid';
                 return redirect()->back()->with('error', $errorMessage);
             }
             // return $encounterID;
             // simpan encounterID ke registration
-     $this->pendaftaran->updateEncounterId($noReg, $encounterID);
+            $this->pendaftaran->updateEncounterId($noReg, $encounterID);
 
             $message = 'Bundle Encounter data has been created successfully.';
             return redirect()->back()->with('success', $message);
@@ -147,7 +156,10 @@ class EncounterCreateController extends Controller
             dd($errorMessage);
         }
 
-        //    redirect view
-        // return view('pages.encounter.create', compact('result'));
+    }
+
+    public function kirimPerTanggal()
+    {
+
     }
 }

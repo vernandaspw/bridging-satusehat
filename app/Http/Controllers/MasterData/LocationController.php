@@ -114,7 +114,7 @@ class LocationController extends Controller
         // return $dataById['identifier'][0]['value'];
 
         // update db bridging
-        $location->siteCode = $dataById['identifier'][0]['value'];
+        $location->ServiceUnitID = $dataById['identifier'][0]['value'];
 
 
         $location->save();

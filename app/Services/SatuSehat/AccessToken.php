@@ -17,15 +17,16 @@ class AccessToken
         $this->config = new ConfigSatuSehat();
     }
 
-    public function token()
+    public static function token()
     {
-        $response = $this->httpClient->post($this->config->setAuthUrl() . '/accesstoken', [
+        $httpClient = new Client();
+        $response = $httpClient->post(ConfigSatuSehat::setAuthUrl() . '/accesstoken', [
             'query' => [
                 'grant_type' => 'client_credentials',
             ],
             'form_params' => [
-                'client_id' => $this->config->setClientId(),
-                'client_secret' => $this->config->setClientSecret(),
+                'client_id' => ConfigSatuSehat::setClientId(),
+                'client_secret' => ConfigSatuSehat::setClientSecret(),
             ],
         ]);
 

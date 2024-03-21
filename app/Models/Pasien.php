@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
 
 class Pasien extends Model
 {
@@ -40,9 +41,9 @@ class Pasien extends Model
                 $queryParams['take'] = $take;
             }
             // Mengirim permintaan HTTP dengan query parameters
-            $request = $this->httpClient->get(env('SIFA_MASTER_URL') .'/pasien', [
+            $request = $this->httpClient->get(env('SIFA_SATUSEHAT_SERVICE_URL') .'/pasien', [
                 'headers' => [
-                    'X-TOKEN' => env('SIFA_MASTER_TOKEN')
+                    'X-TOKEN' => env('SIFA_SATUSEHAT_SERVICE_TOKEN')
                 ],
                 'query' => $queryParams,
             ]);
@@ -63,13 +64,29 @@ class Pasien extends Model
         }
     }
 
+    public static function getByNik($nik)
+    {
+        try {
+            $headers = [
+                'X-TOKEN' =>env('SIFA_SATUSEHAT_SERVICE_TOKEN'),
+            ];
+            $request = Http::withHeaders($headers)->get(env('SIFA_SATUSEHAT_SERVICE_URL') . '/pasien/detail/' . $nik);
+            $response = $request->getBody()->getContents();
+            $result = json_decode($response, true);
+
+            return $result['data'];
+        } catch (\Throwable $e) {
+            return $e->getMessage();
+        }
+    }
+
     public function updateIHS($norm, $kodeIHS)
     {
         try {
             // dd($norm, $kodeIHS);
-            $request = $this->httpClient->post(env('SIFA_MASTER_URL') .'/pasien/ihs/' . $norm, [
+            $request = $this->httpClient->post(env('SIFA_SATUSEHAT_SERVICE_URL') .'/pasien/ihs/' . $norm, [
                 'headers' => [
-                    'X-TOKEN' => env('SIFA_MASTER_TOKEN'),
+                    'X-TOKEN' => env('SIFA_SATUSEHAT_SERVICE_TOKEN'),
                 ],
                 'body' => json_encode([
                     'kodeIHS' => $kodeIHS,

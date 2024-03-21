@@ -2,11 +2,9 @@
 
 namespace App\Services\SatuSehat;
 
-use App\Services\ManageService;
 use Dotenv\Dotenv;
 
-
-class ConfigSatuSehat extends ManageService
+class ConfigSatuSehat
 {
 
     protected $baseUrl;
@@ -26,28 +24,28 @@ class ConfigSatuSehat extends ManageService
         $this->organizationId = env('SATU_SEHAT_ORGANIZATION_ID');
     }
 
-    public function setUrl()
+    public static function setUrl()
     {
-        return $this->baseUrl;
+        return env('SATU_SEHAT_BASE_URL');
     }
 
-    public function setAuthUrl()
+    public static function setAuthUrl()
     {
-        return $this->authUrl;
+        return env('SATU_SEHAT_AUTH_URL');
     }
 
-    public function setClientId()
+    public static function setClientId()
     {
-        return $this->clientId;
+        return env('SATU_SEHAT_CLIENT_ID');
     }
 
-    public function setClientSecret()
+    public static function setClientSecret()
     {
-        return $this->clientSecret;
+        return env('SATU_SEHAT_CLIENT_SECRET');
     }
 
-    public function setOrganizationId()
+    public static function setOrganizationId()
     {
-        return $this->organizationId;
+        return env('SATU_SEHAT_ORGANIZATION_ID');
     }
 }

@@ -83,6 +83,9 @@
                                 <th scope="col">NIK</th>
                                 <th scope="col">Jenis Pasien</th>
                                 <th scope="col">Rekanan</th>
+                                <th scope="col">Kode dokter</th>
+                                <th scope="col">ServiceUnitID</th>
+                                <th scope="col">EncounterID</th>
                                 <th scope="col">Aksi</th>
                             </tr>
                         </thead>
@@ -108,9 +111,12 @@
                                     @endif
                                 </td>
                                 <td>{{ $item['nama_rekanan'] }}</td>
+                                <td>{{ $item['kode_dokter'] }}</td>
+                                <td>{{ $item['ServiceUnitID'] }}</td>
+                                <td>{{ $item['ss_encounter_id'] }}</td>
                                 <td width="15%">
                                     {{-- <a href="http://" class="btn btn-info"><i class="fas fa-info-circle"></i></a> --}}
-                                    <a href="{{ route('case.encounter.create', $item['no_registrasi'])}}" class="btn btn-primary">sync</a>
+                                    <a href="{{ url('case/encounter/create?noreg='. $item['no_registrasi'])}}" class="btn btn-primary">SYNC</a>
                                 </td>
                             </tr>
                             @endforeach
