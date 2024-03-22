@@ -36,8 +36,11 @@
                                         No
                                     </th>
                                     <th>Location ID</th>
-                                    <th>Name</th>
+                                    <th>identifier_value</th>
                                     <th>ServiceUnitID</th>
+                                    <th>RoomID</th>
+                                    <th>RoomCode</th>
+                                    <th>Name</th>
                                     <th>Organization ID</th>
                                     <th>Description</th>
                                     <th>Updated At</th>
@@ -49,8 +52,11 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $location->location_id}}</td>
-                                    <td>{{ $location->name}}</td>
+                                    <td>{{ $location->identifier_value}}</td>
                                     <td>{{ $location->ServiceUnitID}}</td>
+                                    <td>{{ $location->RoomID}}</td>
+                                    <td>{{ $location->RoomCode}}</td>
+                                    <td>{{ $location->name}}</td>
                                     <td>
                                         <a href="{{ route('organization.show', $location->organization_id)}}">{{ $location->organization_id}} </a>
                                     </td>

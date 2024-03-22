@@ -89,8 +89,12 @@ class LocationController extends Controller
 
             // send DB
             Location::create([
+                'identifier_value' => $body['identifier_value'],
                 'location_id' => $data['id'],
                 'name' => $body['name'],
+                'ServiceUnitID' => $request->ServiceUnitID,
+                'RoomID' => $request->RoomID,
+                'RoomCode' => $request->RoomCode,
                 'status' => $body['status'],
                 'organization_id' => $body['organization_id'],
                 'description' => $body['description'],
@@ -113,11 +117,9 @@ class LocationController extends Controller
         $dataById =  $this->locationService->getRequest($this->endpoint . '/' . $locationId);
         // return $dataById['identifier'][0]['value'];
 
-        // update db bridging
-        $location->ServiceUnitID = $dataById['identifier'][0]['value'];
-
-
-        $location->save();
+        // // update db bridging
+        // $location->RoomID = $dataById['identifier'][0]['value'];
+        // $location->save();
         return redirect()->back();
 
         return view($this->view . 'detail', compact('title'));
@@ -191,15 +193,18 @@ class LocationController extends Controller
         }
 
         try {
-
             $url = $this->endpoint . '/' . $body['location_id'];
             // send API
             $data = $this->locationService->patchRequest($url, $body);
 
             // send DB
             $location->update([
+                'identifier_value' => $body['identifier_value'],
                 'location_id' => $data['id'],
                 'name' => $body['name'],
+                'ServiceUnitID' => $request->ServiceUnitID,
+                'RoomID' => $request->RoomID,
+                'RoomCode' => $request->RoomCode,
                 'status' => $body['status'],
                 'organization_id' => $body['organization_id'],
                 'description' => $body['description'],

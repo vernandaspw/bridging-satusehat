@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Encounter\Bundle;
 
 use App\Models\Dokter;
+use App\Models\Location;
 use App\Models\Pasien;
 use App\Models\Pendaftaran;
 use App\Services\RS\RegistrationService;
@@ -53,6 +54,7 @@ class EncounterBundleRajalPage extends Component
         //     $errorMessage = 'sudah pernah mengirim encounter';
         //     return redirect()->back()->with('error', $errorMessage);
         // }
+        dd($detailPendaftaran);
         $nik = $detailPendaftaran['nik'];
         //  CEK NIK PASIEN
         if (empty($nik)) {
@@ -90,12 +92,20 @@ class EncounterBundleRajalPage extends Component
         }
 
         // CEK LOKASI IHS
-        dd('perlu maping data pada ogranisasi = serviceUnit, location = room');
+        // cek roomID, rooomCode, cek serviceUnitID
+        if(!empty($detailPendaftaran['RoomID'])){
+            $location = Location::where('RoomID', $detailPendaftaran['RoomID'])->first();
+        }elseif(!empty($detailPendaftaran['RoomCode'])){
+            $location = Location::where('RoomCode', $detailPendaftaran['RoomCode'])->first();
+        }elseif(!empty($detailPendaftaran['ServiceUnitID'])){
+            $location = Location::where('ServiceUnitID', $detailPendaftaran['ServiceUnitID'])->first();
+        }else{
+            $location = Location::where('identifier_value', $detailPendaftaran['identifier_value'])->first();
+        }
 
-        $location = Location::where('ServiceUnitID', $detailPendaftaran['ServiceUnitID'])->first();
         if (empty($location)) {
-            $errorMessage = 'ID location by ServiceUnitID is not available.';
-            return redirect()->back()->with('error', $errorMessage);
+            $errorMessage = 'ID location is not available.';
+            return $this->emit('error', $errorMessage);
         }
         $location_id = $location->location_id;
         $organization_id = $location->organization_id;
@@ -114,10 +124,8 @@ class EncounterBundleRajalPage extends Component
             'RegistrationDateTime' => $detailPendaftaran['RegistrationDateTime'],
             'DischargeDateTime' => $detailPendaftaran['DischargeDateTime'],
         ];
-        // dd($body);
 
         try {
-
             // send API
             $resultApi = $this->encounterService->PostEncounterCondition($body);
             // dd($resultApi);
