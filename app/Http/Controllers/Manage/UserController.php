@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Manage;
 
-use Rules\Password;
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Rules\Password;
 
 class UserController extends Controller
 {
@@ -31,7 +31,7 @@ class UserController extends Controller
     public function create()
     {
         $title = 'Create' . ' ' . $this->prefix;
-        $users = User::select('name', 'email','password')->get();
+        $users = User::select('name', 'email', 'password', 'role')->get();
         return view($this->view . 'create', compact('title', 'users'));
     }
 
@@ -41,8 +41,9 @@ class UserController extends Controller
         // Validasi input
         $validatedData = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed'],
+            'role' => ['required'],
         ]);
 
         try {
@@ -51,6 +52,7 @@ class UserController extends Controller
                 'name' => $validatedData['name'],
                 'email' => $validatedData['email'],
                 'password' => Hash::make($validatedData['password']),
+                'role' => $validatedData['role']
             ]);
 
             $message = 'Data has been Add successfully.';
@@ -65,7 +67,7 @@ class UserController extends Controller
     {
         $title = 'Edit' . ' ' . $this->prefix;
         $user = User::where('id', $id)->first();
-        $users = User::select('name', 'email', 'password')->get();
+        $users = User::select('name', 'email', 'password', 'role')->get();
         return view($this->view . 'edit', compact('title', 'user', 'users'));
     }
 
@@ -75,9 +77,10 @@ class UserController extends Controller
         $this->validate($request, [
             'name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'string', 'email', 'max:100'],
+            'role' => ['required']
         ]);
         try {
-            // send API 
+            // send API
             // $data = $this->organization->patchRequest($url, $body);
 
             // Send DB
@@ -85,12 +88,14 @@ class UserController extends Controller
                 $user_data = [
                     'name' => $request->name,
                     'email' => $request->email,
-                    'password' => bcrypt($request->password)
+                    'password' => bcrypt($request->password),
+                    'role' => $request->role
                 ];
             } else {
                 $user_data = [
                     'name' => $request->name,
                     'email' => $request->email,
+                    'role' => $request->role
                 ];
             }
             $user->update($user_data);
@@ -110,6 +115,5 @@ class UserController extends Controller
         $message = 'Data has been deleted successfully.';
         return redirect()->route($this->routeIndex)->with('toast_success', $message);
     }
-
 
 }

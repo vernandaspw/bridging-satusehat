@@ -20,6 +20,7 @@ use App\Http\Controllers\MasterData\OrganizationController;
 use App\Http\Livewire\Encounter\Bundle\EncounterBundleIgdPage;
 use App\Http\Livewire\Encounter\Bundle\EncounterBundleRajalPage;
 use App\Http\Livewire\Encounter\Bundle\EncounterBundleRanapPage;
+use App\Http\Livewire\Pendaftaran\PendaftaranPatientGCPage;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +60,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/patient/create', [PasienController::class, 'create'])->name('patient.create');
         Route::get('/patient/{noMr}', [PasienController::class, 'show'])->name('patient.show');
         Route::get('/patient/{noMr}/ihs', [PasienController::class, 'getIHS'])->name('patient.ihs');
+        Route::post('/patient/{noMr}/gc', [PasienController::class, 'isGC'])->name('patient.gc');
         Route::post('/patient', [PasienController::class, 'store'])->name('patient.store');
 
         // DOKTER
@@ -78,6 +80,8 @@ Route::middleware('auth')->group(function () {
     });
 
     // CORE
+    Route::get('pendaftaran/patient-gc', PendaftaranPatientGCPage::class);
+
     Route::get('encounter/bundle/rajal', EncounterBundleRajalPage::class);
     Route::get('encounter/bundle/ranap', EncounterBundleRanapPage::class);
     Route::get('encounter/bundle/igd', EncounterBundleIgdPage::class);

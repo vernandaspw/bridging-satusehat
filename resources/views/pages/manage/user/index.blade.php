@@ -37,6 +37,7 @@
                                     </th>
                                     <th>Name</th>
                                     <th>Email</th>
+                                    <th>Role</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -48,6 +49,7 @@
                                     </td>
                                     <td>{{$user->name}}</td>
                                     <td>{{$user->email}}</td>
+                                    <td>{{ $user->role }}</td>
                                     <td width="15%">
                                         <a href="{{ route('user.edit', $user->id )}}" class="btn btn-warning"><i class="far fa-edit"></i></a>
                                         <button id="delete" data-id="{{ $user->id }}" data-nama="{{ $user->name }}" data-bs-toggle="tooltip" class="btn btn-danger"><i class="fas fa-trash"></i></button>

@@ -74,14 +74,14 @@ class PasienController extends Controller
             // Make request to the API using PatientSatuSehatService
             $pasien = $this->patientSatuSehat->getRequest($this->endpoint, $params);
 
-            if($pasien['total'] == 0){
+            if ($pasien['total'] == 0) {
                 return redirect()->back()->with('error', 'NIK Tidak ditemukan');
             }
 
             $kodeIHS = $pasien['entry'][0]['resource']['id'];
 
             // updateIHS
-             $this->pasien->updateIHS($norm, $kodeIHS);
+            $this->pasien->updateIHS($norm, $kodeIHS);
 
             return redirect()->back()->with('success', 'berhasil kirim dan mendapatkan kode IHS');
         } catch (\Exception $e) {
@@ -90,6 +90,11 @@ class PasienController extends Controller
             $errorMessage = "Error: " . $e->getMessage();
             return redirect()->back()->with('error', $errorMessage);
         }
+    }
+
+    public function gc()
+    {
+        
     }
 
     public function show($noMr)

@@ -5,8 +5,8 @@ namespace App\Http\Livewire\Encounter\Bundle;
 use App\Models\Dokter;
 use App\Models\Location;
 use App\Models\Pasien;
-use App\Models\Pendaftaran;
 use App\Services\RS\RegistrationService;
+use App\Services\SatuSehat\EncounterService;
 use App\Services\SatuSehat\PatientService;
 use Livewire\Component;
 
@@ -54,7 +54,7 @@ class EncounterBundleRajalPage extends Component
         //     $errorMessage = 'sudah pernah mengirim encounter';
         //     return redirect()->back()->with('error', $errorMessage);
         // }
-        dd($detailPendaftaran);
+        // dd($detailPendaftaran['diagnosas']);
         $nik = $detailPendaftaran['nik'];
         //  CEK NIK PASIEN
         if (empty($nik)) {
@@ -83,7 +83,6 @@ class EncounterBundleRajalPage extends Component
             return $this->emit('error', $errorMessage);
         }
 
-
         // CEK IHS PASIEN DI SPHAIRA
         $pasien = Pasien::getByNik($nik);
         if (empty($pasien['ihs'])) {
@@ -93,13 +92,13 @@ class EncounterBundleRajalPage extends Component
 
         // CEK LOKASI IHS
         // cek roomID, rooomCode, cek serviceUnitID
-        if(!empty($detailPendaftaran['RoomID'])){
+        if (!empty($detailPendaftaran['RoomID'])) {
             $location = Location::where('RoomID', $detailPendaftaran['RoomID'])->first();
-        }elseif(!empty($detailPendaftaran['RoomCode'])){
+        } elseif (!empty($detailPendaftaran['RoomCode'])) {
             $location = Location::where('RoomCode', $detailPendaftaran['RoomCode'])->first();
-        }elseif(!empty($detailPendaftaran['ServiceUnitID'])){
+        } elseif (!empty($detailPendaftaran['ServiceUnitID'])) {
             $location = Location::where('ServiceUnitID', $detailPendaftaran['ServiceUnitID'])->first();
-        }else{
+        } else {
             $location = Location::where('identifier_value', $detailPendaftaran['identifier_value'])->first();
         }
 
@@ -123,51 +122,156 @@ class EncounterBundleRajalPage extends Component
             'statusHistory' => 'arrived',
             'RegistrationDateTime' => $detailPendaftaran['RegistrationDateTime'],
             'DischargeDateTime' => $detailPendaftaran['DischargeDateTime'],
+            'diagnosas' => $detailPendaftaran['diagnosas'],
         ];
 
         try {
             // send API
-            $resultApi = $this->encounterService->PostEncounterCondition($body);
-            // dd($resultApi);
+            $resultApi = EncounterService::PostEncounterCondition($body);
+
             // $serviceProvider = $resultApi['serviceProvider']['reference'];
             // $serviceProv = explode('/', $serviceProvider);
 
-            // // send DB
-            // Encounter::create([
-            //     'encounter_id' => $resultApi['id'],
-            //     'kode_register' => $body['kodeReg'],
-            //     'class_code' => $resultApi['class']['code'],
-            //     'patient_ihs'  => $body['patientId'],
-            //     'patient_name'  => $body['patientName'],
-            //     'practitioner_ihs'  => $body['practitionerIhs'],
-            //     'practitioner_name'  => $body['practitionerName'],
-            //     'location_id' => $body['locationId'],
-            //     'service_provider' => end($serviceProv),
-            //     'status' => $body['status'],
-            //     'status_history' => $body['statusHistory'],
-            //     'periode_start' => $resultApi['period']['start'],
-            //     'created_by' => auth()->user()->id ?? ''
-            // ]);
-            $encounterID = $resultApi['entry'][0]['response']['resourceID'];
+            if (!empty($resultApi['entry'][0]['response']['resourceID'])) {
+                $encounterID = $resultApi['entry'][0]['response']['resourceID'];
+            } else {
+                $url = $resultApi['entry'][0]['response']['location'];
+                $uuid = explode('/', parse_url($url, PHP_URL_PATH))[4];
+                $encounterID = $uuid;
+            }
+
             if (empty($encounterID)) {
                 $errorMessage = 'EncounterID tidak valid';
-                return redirect()->back()->with('error', $errorMessage);
+                return $this->emit('error', $errorMessage);
             }
             // return $encounterID;
             // simpan encounterID ke registration
-            $this->pendaftaran->updateEncounterId($noReg, $encounterID);
-
+            RegistrationService::updateEncounterId($noReg, $encounterID);
+            $this->fetchData($this->tanggal);
             $message = 'Bundle Encounter data has been created successfully.';
-            return redirect()->back()->with('success', $message);
-        } catch (\Throwable $th) {
-            $errorMessage = $th->getMessage();
-            dd($errorMessage);
-        }
+            return $this->emit('success', $message);
+        } catch (\Throwable $e) {
 
+            $errorMessage = 'Coba ulang ' . $e->getMessage();
+            return $this->emit('error', $errorMessage);
+        }
     }
 
     public function kirimPerTanggal()
     {
+        // kirim yang telah discharge dan belum memiliki encounterID
+        $tanggal = $this->tanggal;
+        try {
+            $registrations = RegistrationService::getDate($tanggal);
+
+            // pengiriman data
+            foreach ($registrations as $registration) {
+                $nik = $registration['nik'];
+                //  CEK NIK PASIEN
+
+                if (!empty($nik)) {
+                    $patient = PatientService::getRequest('Patient', ['identifier' => $nik]);
+                }
+                if (!empty($patient['entry'])) {
+                    $patientId = $patient['entry'][0]['resource']['id'];
+                    $patientName = $patient['entry'][0]['resource']['name'][0]['text'];
+                }
+                $kodeDokter = $registration['kode_dokter'];
+                if (!empty($kodeDokter)) {
+                    $dokter = Dokter::getByKode($kodeDokter);
+                }
+                // CEK IHS DOKTER
+                if (!empty($dokter['ihs'])) {
+
+                }
+                $pasien = Pasien::getByNik($nik);
+
+                // CEK IHS PASIEN DI SPHAIRA
+                if (!empty($pasien['ihs'])) {
+
+                }
+
+                // CEK LOKASI IHS
+                // cek roomID, rooomCode, cek serviceUnitID
+                if (!empty($registration['RoomID'])) {
+                    $location = Location::where('RoomID', $registration['RoomID'])->first();
+                } elseif (!empty($registration['RoomCode'])) {
+                    $location = Location::where('RoomCode', $registration['RoomCode'])->first();
+                } elseif (!empty($registration['ServiceUnitID'])) {
+                    $location = Location::where('ServiceUnitID', $registration['ServiceUnitID'])->first();
+                } elseif (!empty($registration['identifier_value'])) {
+                    $location = Location::where('identifier_value', $registration['identifier_value'])->first();
+                }
+
+                if (!empty($location)) {
+                    $location_id = $location->location_id;
+                    $organization_id = $location->organization_id;
+                }
+
+                if (!empty($registration['no_registrasi']) &&
+                    !empty($patientId) &&
+                    !empty($patientName) &&
+                    !empty($$dokter['ihs']) &&
+                    !empty($dokter['nama_dokter']) &&
+                    !empty($organization_id) &&
+                    !empty($$location->name) &&
+                    !empty($registration['RegistrationDateTime']) &&
+                    !empty($registration['DischargeDateTime'])
+                ) {
+                    $noReg = $registration['no_registrasi'];
+                    $body = [
+                        'kodeReg' => $noReg,
+                        'status' => 'arrived',
+                        'patientId' => $patientId,
+                        'patientName' => $patientName,
+                        'practitionerIhs' => $dokter['ihs'],
+                        'practitionerName' => $dokter['nama_dokter'],
+                        'organizationId' => $organization_id,
+                        'locationId' => $location_id,
+                        'locationName' => $location->name,
+                        'statusHistory' => 'arrived',
+                        'RegistrationDateTime' => $registration['RegistrationDateTime'],
+                        'DischargeDateTime' => $registration['DischargeDateTime'],
+                        'diagnosas' => $registration['diagnosas'],
+                    ];
+
+                    try {
+                        // send API
+                        $resultApi = EncounterService::PostEncounterCondition($body);
+                        // $serviceProvider = $resultApi['serviceProvider']['reference'];
+                        // $serviceProv = explode('/', $serviceProvider);
+
+                        // dd($resultApi);
+                        if (!empty($resultApi['entry'][0]['response']['resourceID'])) {
+                            $encounterID = $resultApi['entry'][0]['response']['resourceID'];
+                        } else {
+                            $url = $resultApi['entry'][0]['response']['location'];
+                            $uuid = explode('/', parse_url($url, PHP_URL_PATH))[4];
+                            $encounterID = $uuid;
+                        }
+
+                        if (!empty($encounterID)) {
+                            // simpan encounterID ke registration
+                            RegistrationService::updateEncounterId($noReg, $encounterID);
+                            $this->fetchData($this->tanggal);
+                            $message = 'Bundle Encounter data has been created successfully.';
+                            return $this->emit('success', $message);
+                        }
+                    } catch (\Throwable $e) {
+
+                        $errorMessage = 'Coba ulang ' . $e->getMessage();
+                        return $this->emit('error', $errorMessage);
+                    }
+
+                }
+            }
+
+        } catch (\Exception $e) {
+            dd($e);
+            // Tangani kesalahan
+            return response()->json(['error' => 'Failed to fetch data'], 500);
+            // return view('error-view', ['error' => 'Failed to fetch data']);
+        }
 
     }
 }

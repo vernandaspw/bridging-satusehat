@@ -26,7 +26,7 @@
                                     <div class="form-group d-flex align-items-end">
                                         <button type="button" wire:click='tanggal()' class="btn btn-success mr-2"
                                             style="margin-top: 30px;">Filter</button>
-                                        <button wire:click="syncPerTanggal" type="button" class="btn btn-primary mr-2"
+                                        <button wire:click="kirimPerTanggal" type="button" class="btn btn-primary mr-2"
                                             style="margin-top: 30px;">Kirim data yg discharge Per Tanggal</button>
                                     </div>
                                 </div>

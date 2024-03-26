@@ -16,7 +16,11 @@ return new class extends Migration
         Schema::create('locations', function (Blueprint $table) {
             $table->id();
             $table->string('location_id');
+            $table->string('identifier_value', 20)->nullable();
             $table->string('name');
+            $table->string('ServiceUnitID', 20)->nullable();
+            $table->string('RoomID', 10)->nullable();
+            $table->string('RoomCode', 20)->nullable();
             $table->string('status');
             $table->string('organization_id');
             $table->text('description')->nullable();

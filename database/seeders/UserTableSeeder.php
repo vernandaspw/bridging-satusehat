@@ -18,7 +18,8 @@ class UserTableSeeder extends Seeder
         User::create([
             'name' => 'IT RSUD SIFA',
             'email' => 'itrsudprovsumsel@gmail.com',
-            'password' => bcrypt('password')
+            'password' => bcrypt('password'),
+            'role' => 'admin'
         ]);
     }
 }

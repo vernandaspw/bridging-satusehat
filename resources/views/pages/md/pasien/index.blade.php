@@ -15,7 +15,7 @@
 <div class="main-content">
     <section class="section">
         <div class="section-header">
-            <h1>Master Patient Index</h1>
+            <h1>Master Patient</h1>
             <div class="section-header-breadcrumb">
                 <div class="breadcrumb-item active"><a href="{{ route('patient.index') }}">Master Data</a></div>
                 <div class="breadcrumb-item">Patient</div>
@@ -103,7 +103,7 @@
                                     <td width="15%">
                                         {{-- <a href="{{ route('patient.show', $item['no_mr'])}}" class="btn btn-info"><i class="fas fa-info-circle"></i></a> --}}
                                         @if ($item['nik'])
-                                        <a href="{{ route('patient.ihs', $item['no_mr'])}}" class="btn btn-primary">IHS</a>
+                                        <a href="{{ route('patient.ihs', $item['no_mr'])}}" class="btn btn-primary">buat IHS</a>
                                         @endif
                                     </td>
                                 </tr>

@@ -34,25 +34,25 @@
                                 <div class="form-group row mb-4">
                                     <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">ServiceUnitID</label>
                                     <div class="col-sm-12 col-md-7">
-                                        <input type="text" class="form-control" name="ServiceUnitID">
+                                        <input type="text" class="form-control" name="ServiceUnitID" value="{{ $data['ServiceUnitID']}}">
                                     </div>
                                 </div>
                                 <div class="form-group row mb-4">
                                     <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">RoomID</label>
                                     <div class="col-sm-12 col-md-7">
-                                        <input type="text" class="form-control" name="RoomID">
+                                        <input type="text" class="form-control" name="RoomID" value="{{ $data['RoomID']}}">
                                     </div>
                                 </div>
                                 <div class="form-group row mb-4">
                                     <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">RoomCode</label>
                                     <div class="col-sm-12 col-md-7">
-                                        <input type="text" class="form-control" name="RoomCode">
+                                        <input type="text" class="form-control" name="RoomCode" value="{{ $data['RoomCode']}}">
                                     </div>
                                 </div>
                                 <div class="form-group row mb-4">
-                                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Identifier Value (RoomID, RoomCode, ServiceUnitID)<code>*</code></label>
+                                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Identifier Value<code>*</code></label>
                                     <div class="col-sm-12 col-md-7">
-                                        <input type="text" class="form-control" name="identifier_value">
+                                        <input type="text" class="form-control" name="identifier_value" value="{{ $data['identifier_value']}}">
                                     </div>
                                 </div>
                                 <div class="form-group row mb-4">

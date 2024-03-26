@@ -139,6 +139,9 @@ class LocationController extends Controller
         $organizationId = explode('/', $organizationId);
 
         $data = [
+            'ServiceUnitID' => $location->ServiceUnitID,
+            'RoomID' => $location->RoomID,
+            'RoomCode' => $location->RoomCode,
             'location_id' => $location_id,
             'identifier_value' => $dataById['identifier'][0]['value'],
             'name' => $dataById['name'],
