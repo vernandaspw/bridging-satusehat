@@ -2,6 +2,10 @@
 
 ## Quick start
 
+-   main
+-   prod
+-   sanbox
+
 Several quick start options are available:
 
 -   Clone the repo: `git clone https://github.com/vernandaspw/bridging-satusehat.git`
@@ -23,6 +27,4 @@ SATU_SEHAT_CLIENT_SECRET={client_secret}
 
 -   Run `php artisan serve` command
 -   Done
-
-Read the [documentation page](https://getstisla.com/docs) for more information on the framework contents, templates and examples, and more.
 
