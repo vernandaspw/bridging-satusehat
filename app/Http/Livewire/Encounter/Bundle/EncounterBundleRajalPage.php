@@ -30,6 +30,7 @@ class EncounterBundleRajalPage extends Component
     {
         try {
             $this->registrations = RegistrationService::getData($tanggal, $page);
+            // dd($this->registrations);
         } catch (\Exception $e) {
             // Tangani kesalahan
             return response()->json(['error' => 'Failed to fetch data'], 500);
@@ -92,10 +93,11 @@ class EncounterBundleRajalPage extends Component
 
         // CEK LOKASI IHS
         // cek roomID, rooomCode, cek serviceUnitID
-        if (!empty($detailPendaftaran['RoomID'])) {
-            $location = Location::where('RoomID', $detailPendaftaran['RoomID'])->first();
-        } elseif (!empty($detailPendaftaran['RoomCode'])) {
+        // dd($detailPendaftaran);
+        if (!empty($detailPendaftaran['RoomCode'])) {
             $location = Location::where('RoomCode', $detailPendaftaran['RoomCode'])->first();
+        } else if (!empty($detailPendaftaran['RoomID'])) {
+            $location = Location::where('RoomID', $detailPendaftaran['RoomID'])->first();
         } elseif (!empty($detailPendaftaran['ServiceUnitID'])) {
             $location = Location::where('ServiceUnitID', $detailPendaftaran['ServiceUnitID'])->first();
         } else {
@@ -193,13 +195,13 @@ class EncounterBundleRajalPage extends Component
 
                 // CEK LOKASI IHS
                 // cek roomID, rooomCode, cek serviceUnitID
-                if (!empty($registration['RoomID'])) {
-                    $location = Location::where('RoomID', $registration['RoomID'])->first();
-                } elseif (!empty($registration['RoomCode'])) {
+                if (!empty($registration['RoomCode'])) {
                     $location = Location::where('RoomCode', $registration['RoomCode'])->first();
+                } else if (!empty($registration['RoomID'])) {
+                    $location = Location::where('RoomID', $registration['RoomID'])->first();
                 } elseif (!empty($registration['ServiceUnitID'])) {
                     $location = Location::where('ServiceUnitID', $registration['ServiceUnitID'])->first();
-                } elseif (!empty($registration['identifier_value'])) {
+                } else {
                     $location = Location::where('identifier_value', $registration['identifier_value'])->first();
                 }
 
