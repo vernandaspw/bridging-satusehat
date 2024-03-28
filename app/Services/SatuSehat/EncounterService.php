@@ -131,26 +131,35 @@ class EncounterService
         $uuidEncounter = Str::uuid();
 
         // diagnosis
+        $diagnosis = [];
+        $diagnosis_data = [];
         if (!empty($body['diagnosas'])) {
+            // dd($body['diagnosas']);
             foreach ($body['diagnosas'] as $indexDiagnosa => $diagnosa) {
-                $diagnosis = [
-                    [
-                        "condition" => [
-                            "reference" => "urn:uuid:" . Str::uuid(),
-                            "display" => "",
-                        ],
-                        "use" => [
-                            "coding" => [
-                                [
-                                    "system" => "http://terminology.hl7.org/CodeSystem/diagnosis-role",
-                                    "code" => $diagnosa['pdiag_diagnosa'],
-                                    "display" => "Discharge diagnosis",
-                                ],
+                $item_data = [
+                    'uuid' => strval(Str::uuid()),
+                    "code" => $diagnosa['pdiag_diagnosa'] ? $diagnosa['pdiag_diagnosa'] : '-',
+                    'name' => '-',
+                ];
+                $diagnosis_data[] = $item_data;
+                $item = [
+                    "condition" => [
+                        "reference" => "urn:uuid:" . $item_data['uuid'],
+                        "display" => $diagnosa['pdiag_diagnosa'] ? $diagnosa['pdiag_diagnosa'] : '-',
+                    ],
+                    "use" => [
+                        "coding" => [
+                            [
+                                "system" => "http://terminology.hl7.org/CodeSystem/diagnosis-role",
+                                "code" => 'DD',
+                                "display" => "Discharge diagnosis",
                             ],
                         ],
-                        "rank" => $indexDiagnosa + 1,
                     ],
+                    "rank" => $indexDiagnosa + 1,
                 ];
+                $diagnosis[] = $item;
+
             }
         }
 
@@ -195,7 +204,7 @@ class EncounterService
                     [
                         "location" => [
                             "reference" => "Location/" . $body['locationId'],
-                            "display" => $body['locationName'],
+                            "display" => $body['locationName'] ? $body['locationName'] : '-',
                         ],
                     ],
                 ],
@@ -230,7 +239,7 @@ class EncounterService
                 "identifier" => [
                     [
                         "system" => "http://sys-ids.kemkes.go.id/encounter/" . env('SATU_SEHAT_ORGANIZATION_ID'),
-                        "value" => $body['patientId'],
+                        "value" => $body['kodeReg'],
                     ],
                 ],
             ],
@@ -242,10 +251,11 @@ class EncounterService
 
         // conditions
         if (!empty($diagnosis)) {
-            foreach ($diagnosis as $indexDiagnosisItem => $diagnosisItem) {
+            foreach ($diagnosis_data as $diagnosisItem) {
                 // dd($diagnosisItem);
                 $condition = [
-                    "fullUrl" => "urn:uuid:" . substr($diagnosisItem['condition']['reference'], strlen("urn:uuid:")),
+                    // "fullUrl" => "urn:uuid:" . substr($diagnosisItem['data']['condition']['reference'], strlen("urn:uuid:")),
+                    "fullUrl" => "urn:uuid:" . $diagnosisItem['uuid'],
                     "resource" => [
                         "resourceType" => "Condition",
                         "clinicalStatus" => [
@@ -272,8 +282,8 @@ class EncounterService
                             "coding" => [
                                 [
                                     "system" => "http://hl7.org/fhir/sid/icd-10",
-                                    "code" => $diagnosisItem['use']['coding'][0]['code'],
-                                    "display" => $diagnosisItem['use']['coding'][0]['display'],
+                                    "code" => $diagnosisItem['code'],
+                                    "display" => $diagnosisItem['name'],
                                 ],
                             ],
                         ],
@@ -291,6 +301,7 @@ class EncounterService
                         "url" => "Condition",
                     ],
                 ];
+                $conditions[] = $condition;
             }
         }
 
@@ -313,8 +324,8 @@ class EncounterService
         $url = ConfigSatuSehat::setUrl();
 
         $bodyRaw = self::bodyPostEncounterCondition($body);
+        // dd($bodyRaw);
         $jsonData = json_encode($bodyRaw, JSON_PRETTY_PRINT);
-        // dd($jsonData);
 
         $httpClient = new Client(
             [
