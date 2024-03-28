@@ -112,9 +112,9 @@ class EncounterBundleRajalPage extends Component
         ]);
         $data = $response->getBody()->getContents();
         $practitionerSatuSehat = json_decode($data, true);
+
         if (empty($practitionerSatuSehat['entry'])) {
-            $errorMessage = 'The practitioner has not been registered in SatuSehat.';
-            return $this->emit('error', $errorMessage);
+            return;
         }
         $kodeIHS = $practitionerSatuSehat['entry'][0]['resource']['id'];
 
@@ -151,10 +151,7 @@ class EncounterBundleRajalPage extends Component
             $response = $request->getBody()->getContents();
             $statusCode = $request->getStatusCode();
 
-            if ($statusCode == 200) {
-                $result = json_decode($response, true);
-                return $result;
-            } else {
+            if ($statusCode != 200) {
                 throw new \Exception("Failed to update IHS: " . $statusCode);
             }
         } catch (\Exception $e) {
@@ -166,9 +163,9 @@ class EncounterBundleRajalPage extends Component
     public function getIhsPasienByNIK($nik)
     {
         $patient = PatientService::getRequest('Patient', ['identifier' => $nik]);
+
         if (empty($patient['entry'])) {
-            $errorMessage = 'The patient has not been registered in SatuSehat.';
-            return $this->emit('error', $errorMessage);
+            return;
         }
         $ihs = $patient['entry'][0]['resource']['id'];
 
@@ -204,10 +201,9 @@ class EncounterBundleRajalPage extends Component
         $nama_pasien = $registration['nama_pasien'];
         $ihs_pasien = $this->getIhsPasienByNIK($registration['nik']);
         if (empty($ihs_pasien)) {
-            $errorMessage = 'IHS Pasien is not available.';
+            $errorMessage = 'The patient has not been registered in SatuSehat';
             return $this->emit('error', $errorMessage);
         }
-
 
         //   CEK DOKTER
         if (empty($registration['nik_dokter'])) {
@@ -219,20 +215,16 @@ class EncounterBundleRajalPage extends Component
         $nama_dokter = $registration['nama_dokter'];
         $ihs_dokter = $this->getIhsDokterByNIK($kode_dokter, $registration['nik_dokter']);
         if (empty($ihs_dokter)) {
-            $errorMessage = 'IHS Dokter is not available.';
+            $errorMessage = 'IThe practitioner has not been registered in SatuSehat';
             return $this->emit('error', $errorMessage);
         }
 
         // CEK LOKASI
-        if (!empty($registration['RoomCode'])) {
-            $location = Location::where('RoomCode', $registration['RoomCode'])->first();
-        } else if (!empty($registration['RoomID'])) {
-            $location = Location::where('RoomID', $registration['RoomID'])->first();
-        } elseif (!empty($registration['ServiceUnitID'])) {
-            $location = Location::where('ServiceUnitID', $registration['ServiceUnitID'])->first();
-        } else {
-            $location = Location::where('identifier_value', $registration['identifier_value'])->first();
-        }
+        $location = Location::where('identifier_value', $registration['RoomCode'])
+            ->orWhere('identifier_value', $registration['RoomID'])
+            ->orWhere('identifier_value', $registration['ServiceUnitID'])
+            ->first();
+
         if (empty($location)) {
             $errorMessage = 'ID location is not available.';
             return $this->emit('error', $errorMessage);
@@ -259,8 +251,8 @@ class EncounterBundleRajalPage extends Component
 
         try {
             // send API
-            $resultApi = EncounterService::PostEncounterCondition($body);
 
+            $resultApi = EncounterService::PostEncounterCondition($body);
             if (!empty($resultApi['entry'][0]['response']['resourceID'])) {
                 $encounterID = $resultApi['entry'][0]['response']['resourceID'];
             } else {
@@ -279,7 +271,7 @@ class EncounterBundleRajalPage extends Component
             $message = 'Bundle Encounter data has been created successfully.';
             return $this->emit('success', $message);
         } catch (\Throwable $e) {
-
+            dd($e->getMessage());
             $errorMessage = 'Coba ulang ' . $e->getMessage();
             return $this->emit('error', $errorMessage);
         }

@@ -118,8 +118,8 @@ class LocationController extends Controller
         // return $dataById['identifier'][0]['value'];
 
         // // update db bridging
-        // $location->RoomID = $dataById['identifier'][0]['value'];
-        // $location->save();
+        $location->identifier_value = $dataById['identifier'][0]['value'];
+        $location->save();
         return redirect()->back();
 
         return view($this->view . 'detail', compact('title'));

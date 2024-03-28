@@ -319,25 +319,29 @@ class EncounterService
 
     public static function PostEncounterCondition(array $body)
     {
-        $token = AccessToken::token();
+        try {
+            $token = AccessToken::token();
 
-        $url = ConfigSatuSehat::setUrl();
+            $url = ConfigSatuSehat::setUrl();
 
-        $bodyRaw = self::bodyPostEncounterCondition($body);
-        // dd($bodyRaw);
-        $jsonData = json_encode($bodyRaw, JSON_PRETTY_PRINT);
+            $bodyRaw = self::bodyPostEncounterCondition($body);
+            // dd($bodyRaw);
+            $jsonData = json_encode($bodyRaw, JSON_PRETTY_PRINT);
 
-        $httpClient = new Client(
-            [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $token,
-                ],
-                'json' => $bodyRaw,
-            ]
-        );
-        $response = $httpClient->post($url);
+            $httpClient = new Client(
+                [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $token,
+                    ],
+                    'json' => $bodyRaw,
+                ]
+            );
+            $response = $httpClient->post($url);
 
-        $data = $response->getBody()->getContents();
-        return json_decode($data, true);
+            $data = $response->getBody()->getContents();
+            return json_decode($data, true);
+        } catch (\Throwable $e) {
+            dd($e->getMessage());
+        }
     }
 }
