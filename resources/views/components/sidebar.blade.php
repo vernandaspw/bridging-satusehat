@@ -12,11 +12,12 @@
         </div>
 
         <ul class="sidebar-menu">
-            <li class=' {{ env('IS_PROD') ? 'bg-success' : 'bg-warning' }}'>
-                <a class="nav-link" href="javascript:void()"><i
-                    class="fas fa-rocket"></i> Mode {{ env('IS_PROD') ? 'PRODUCTION' : 'SANBOX' }}</a>
+            <li class=' {{ env('IS_PROD') == true ? 'bg-success' : 'bg-warning' }}'>
+                <a class="nav-link" href="javascript:void()"><i class="fas fa-rocket"></i> Mode
+                    {{ env('IS_PROD') == true ? 'PRODUCTION' : 'SANBOX' }}</a>
             </li>
-            <li class="menu-header">Menu</li>
+
+            <li class="menu-header">Menu </li>
             <li class='{{ Request::is('dashboard') ? 'active' : '' }}'>
                 <a class="nav-link" href="{{ url('dashboard') }}"><i class="fas fa-fire"></i> Dashboard</a>
             </li>
@@ -32,7 +33,6 @@
                 </li> --}}
             {{-- @endif --}}
             @if (auth()->user()->role == 'admin')
-
                 <li class="nav-item dropdown {{ Request::is('md*') ? 'active' : '' }}">
                     <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i
                             class="fas fa-columns"></i>
