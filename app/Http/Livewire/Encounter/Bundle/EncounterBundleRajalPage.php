@@ -29,10 +29,14 @@ class EncounterBundleRajalPage extends Component
 
     public $registrations = [];
     public $tanggal;
+    public $page = 1;
     public function fetchData($tanggal = null, $page = null)
     {
         try {
-            $this->registrations = RegistrationService::getData($tanggal, $page);
+            if(!empty($page)){
+                $this->page = $page;
+            }
+            $this->registrations = RegistrationService::getData($tanggal, $this->page);
             // dd($this->registrations);
         } catch (\Exception $e) {
             // Tangani kesalahan
@@ -42,6 +46,7 @@ class EncounterBundleRajalPage extends Component
     }
     public function page($page)
     {
+        $this->page = $page;
         $this->fetchData(null, $page);
         // dd($this->registrations);
     }
