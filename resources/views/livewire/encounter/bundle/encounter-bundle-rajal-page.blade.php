@@ -63,6 +63,7 @@
                                         <th scope="col">RoomCode</th>
                                         <th scope="col">RoomName</th>
                                         <th scope="col">EncounterID</th>
+                                        <th scope="col">EncounterIDsanbox</th>
                                         <th scope="col">Aksi</th>
                                     </tr>
                                 </thead>
@@ -94,6 +95,7 @@
                                             <td>{{ $item['RoomCode'] }}</td>
                                             <td>{{ $item['RoomName'] }}</td>
                                             <td>{{ $item['ss_encounter_id'] }}</td>
+                                            <td>{{ $item['ss_encounter_id_sanbox'] }}</td>
                                             <td width="15%">
                                                 {{-- <a href="http://" class="btn btn-info"><i class="fas fa-info-circle"></i></a> --}}
                                                 <a href="javascript:void()" wire:click="kirim('{{ $item['no_registrasi'] }}')"

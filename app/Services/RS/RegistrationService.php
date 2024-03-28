@@ -111,6 +111,7 @@ class RegistrationService
                 'body' => json_encode([
                     'noreg' => $noreg,
                     'encounter_id' => $encounter_id,
+                    'isProd' => env('IS_PROD')
                 ]),
             ]);
 
