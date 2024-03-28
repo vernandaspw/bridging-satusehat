@@ -78,6 +78,7 @@
                                     <th>Gender</th>
                                     <th>tgl lahir</th>
                                     <th>IHS</th>
+                                    <th>IHS sanbox</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -100,10 +101,11 @@
                                     </td>
                                     <td>{{ $item['tanggal_lahir'] }}</td>
                                     <td>{{ $item['ihs'] }}</td>
+                                    <td>{{ $item['ihs_sanbox'] }}</td>
                                     <td width="15%">
                                         {{-- <a href="{{ route('patient.show', $item['no_mr'])}}" class="btn btn-info"><i class="fas fa-info-circle"></i></a> --}}
                                         @if ($item['nik'])
-                                        <a href="{{ route('patient.ihs', $item['no_mr'])}}" class="btn btn-primary">buat IHS</a>
+                                        <a href="{{ route('patient.ihs', $item['no_mr'])}}" class="btn btn-primary">IHS</a>
                                         @endif
                                     </td>
                                 </tr>

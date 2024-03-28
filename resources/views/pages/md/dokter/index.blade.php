@@ -39,6 +39,7 @@
                                 <th scope="col">Email</th>
                                 <th scope="col">NIK</th>
                                 <th scope="col">IHS</th>
+                                <th scope="col">IHS sanbox</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -57,6 +58,7 @@
                                 <td>{{ $item['email'] }}</td>
                                 <td>{{ $item['nik'] }}</td>
                                 <td>{{ $item['ihs'] }}</td>
+                                <td>{{ $item['ihs_sanbox'] }}</td>
                                 <td width="15%">
                                     @if ($item['nik'] != '-' && $item['nik'] != '')
                                     <a href="{{ route('dokter.ihs', $item['kode_dokter'] )}}" class="btn btn-success">IHS</a>

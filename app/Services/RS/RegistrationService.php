@@ -31,6 +31,7 @@ class RegistrationService
 
             $request = $httpClient->get(env('SIFA_SATUSEHAT_SERVICE_URL') . '/registration/rajal');
 
+
             // $request = $this->httpClient->get('https://daftar.rsumm.co.id/api.simrs/pendaftaran', [
             //     'query' => $queryParams,
             // ]);

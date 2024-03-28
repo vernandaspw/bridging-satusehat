@@ -55,7 +55,7 @@ class EncounterBundleRajalPage extends Component
         //     $errorMessage = 'sudah pernah mengirim encounter';
         //     return redirect()->back()->with('error', $errorMessage);
         // }
-        // dd($detailPendaftaran['diagnosas']);
+        // dd($detailPendaftaran);
         $nik = $detailPendaftaran['nik'];
         //  CEK NIK PASIEN
         if (empty($nik)) {
@@ -130,7 +130,7 @@ class EncounterBundleRajalPage extends Component
         try {
             // send API
             $resultApi = EncounterService::PostEncounterCondition($body);
-
+            dd($resultApi);
             // $serviceProvider = $resultApi['serviceProvider']['reference'];
             // $serviceProv = explode('/', $serviceProvider);
 
@@ -153,7 +153,7 @@ class EncounterBundleRajalPage extends Component
             $message = 'Bundle Encounter data has been created successfully.';
             return $this->emit('success', $message);
         } catch (\Throwable $e) {
-
+            dd($e->getMessage());
             $errorMessage = 'Coba ulang ' . $e->getMessage();
             return $this->emit('error', $errorMessage);
         }
