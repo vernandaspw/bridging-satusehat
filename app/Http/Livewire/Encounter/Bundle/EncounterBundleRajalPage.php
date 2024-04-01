@@ -33,10 +33,13 @@ class EncounterBundleRajalPage extends Component
     public function fetchData($tanggal = null, $page = null)
     {
         try {
+            if(!empty($tanggal)){
+                $this->tanggal = $tanggal;
+            }
             if(!empty($page)){
                 $this->page = $page;
             }
-            $this->registrations = RegistrationService::getData($tanggal, $this->page);
+            $this->registrations = RegistrationService::getData($this->tanggal, $this->page);
             // dd($this->registrations);
         } catch (\Exception $e) {
             // Tangani kesalahan
@@ -53,7 +56,7 @@ class EncounterBundleRajalPage extends Component
 
     public function tanggal()
     {
-        $this->fetchData($this->tanggal, null);
+        $this->fetchData($this->tanggal);
     }
 
     // DOKTER ===============================================================
