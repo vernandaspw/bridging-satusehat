@@ -64,7 +64,7 @@
                                 <div class="form-group row mb-4">
                                     <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Status<code>*</code></label>
                                     <div class="col-sm-12 col-md-7">
-                                        <select class="form-control selectric" name="status">
+                                        <select class="select2" name="status">
                                             <option value="" disabled selected>-- Select item --</option>
                                             @foreach($statuses as $status)
                                             <option value="{{ $status }}" {{ $data['status'] == $status ? 'selected' : ''}}>{{ $status}}</option>
@@ -75,7 +75,7 @@
                                 <div class="form-group row mb-4">
                                     <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Pysical Type<code>*</code></label>
                                     <div class="col-sm-12 col-md-7">
-                                        <select class="form-control selectric" name="physical_type">
+                                        <select class="select2" name="physical_type">
                                             <option value="" disabled selected>-- Select item --</option>
                                             @foreach($physicalTypes as $type)
                                             <option value="{{ $type['coding_code']}}" {{ $data['physical_type'] == $type['coding_code'] ? 'selected' : ''}}>{{ $type['coding_display']}} - ({{ $type['keterangan'] }})</option>
@@ -86,7 +86,7 @@
                                 <div class="form-group row mb-4">
                                     <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Location Mode<code>*</code></label>
                                     <div class="col-sm-12 col-md-7">
-                                        <select class="form-control selectric" name="location_mode">
+                                        <select class="select2" name="location_mode">
                                             <option value="" disabled selected>-- Select item --</option>
                                             @foreach($modes as $mode)
                                             <option value="{{ $mode['mode']}}" {{ $data['mode'] == $mode['mode'] ? 'selected' : ''}}>{{ $mode['mode']}} - ({{ $mode['keterangan'] }})</option>
@@ -97,7 +97,7 @@
                                 <div class="form-group row mb-4">
                                     <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Part Of</label>
                                     <div class="col-sm-12 col-md-7">
-                                        <select class="form-control selectric" name="part_of">
+                                        <select class="select2" name="part_of">
                                             <option value="" disabled selected>-- Select item --</option>
                                             @foreach($locationByParts as $id => $name)
                                             <option value="{{ $id }}" {{ $id == $data['part_of'] ? 'selected' : ''}}>{{ $name }}</option>
@@ -108,7 +108,7 @@
                                 <div class="form-group row mb-4">
                                     <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Organization</label>
                                     <div class="col-sm-12 col-md-7">
-                                        <select class="form-control selectric" name="organization_id">
+                                        <select class="select2" name="organization_id">
                                             <option disabled selected>-- Select item --</option>
                                             @foreach($organizations as $id => $name)
                                             <option value="{{ $id }}" {{ $data['organization_id'] == $id ? 'selected' : ''}}>{{ $name}}</option>

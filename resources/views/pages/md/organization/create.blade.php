@@ -45,7 +45,7 @@
                                 <div class="form-group row mb-4">
                                     <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Type<code>*</code></label>
                                     <div class="col-sm-12 col-md-7">
-                                        <select class="form-control selectric" name="type_code">
+                                        <select class="select2" name="type_code">
                                             <option value="" disabled selected>-- Select item --</option>
                                             @foreach($organizationType as $type)
                                             <option value="{{ $type['coding_code']}}">{{ $type['coding_display']}}</option>
@@ -56,7 +56,7 @@
                                 <div class="form-group row mb-4">
                                     <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Part Of</label>
                                     <div class="col-sm-12 col-md-7">
-                                        <select class="form-control selectric" name="part_of">
+                                        <select class="select2" name="part_of">
                                             <option disabled selected>-- Select item --</option>
                                             @foreach($organizations as $organization)
                                             <option value="{{ $organization->organization_id }}">{{ $organization->name}}</option>
