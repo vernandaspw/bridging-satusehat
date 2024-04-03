@@ -89,7 +89,7 @@ class Dokter extends Model
 
             return $result['data'];
         } catch (\Throwable $e) {
-            return $e->getMessage();
+            return null;
         }
     }
 

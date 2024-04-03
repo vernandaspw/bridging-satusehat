@@ -17,7 +17,7 @@ class RegistrationService
                 $query['tanggal'] = date('Y-m-d');
             }
 
-            if($page != null) {
+            if ($page != null) {
                 $query['page'] = $page;
             }
             // dd($page);
@@ -79,6 +79,48 @@ class RegistrationService
         }
     }
 
+    public static function getLastDay($tanggal = null, $hari = null)
+    {
+        try {
+            $query = [];
+
+            if ($tanggal != null) {
+                $query['tanggal'] = $tanggal;
+            } else {
+                $query['tanggal'] = date('Y-m-d');
+            }
+
+            if ($hari != null) {
+                $query['hari'] = $hari;
+            } else {
+                $query['hari'] = 0;
+            }
+
+            $query['isProd'] = env('IS_PROD');
+
+
+            $httpClient = new Client([
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'X-TOKEN' => env('SIFA_SATUSEHAT_SERVICE_TOKEN'),
+                ],
+                'query' => $query,
+            ]);
+
+            $request = $httpClient->get(env('SIFA_SATUSEHAT_SERVICE_URL') . '/registration/rajal/lastday');
+
+            // Mengambil respons dari API
+            $response = $request->getBody()->getContents();
+            $data = json_decode($response, true);
+
+            return $data['data'];
+        } catch (\Exception $e) {
+            dd($e);
+            // Tangani kesalahan
+            return []; // Mengembalikan array kosong jika terjadi kesalahan
+        }
+    }
+
     public static function getByKodeReg($noReg)
     {
         $httpClient = new Client([
@@ -111,7 +153,7 @@ class RegistrationService
                 'body' => json_encode([
                     'noreg' => $noreg,
                     'encounter_id' => $encounter_id,
-                    'isProd' => env('IS_PROD')
+                    'isProd' => env('IS_PROD'),
                 ]),
             ]);
 
