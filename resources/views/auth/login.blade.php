@@ -8,8 +8,8 @@
 @endpush
 
 @section('main')
-    <div class="card card-primary">
-        <div class="card-header">
+    <div class="card card-primary ">
+        <div class="card-header ">
             <h4>Login</h4>
         </div>
 
@@ -73,6 +73,11 @@
                         tabindex="4">
                         Login
                     </button>
+                    <a href="{{ url('docs', []) }}"
+                        class="btn btn-info btn-lg btn-block"
+                        tabindex="4">
+                        Dokumentasi
+                    </a>
                 </div>
             </form>
         </div>

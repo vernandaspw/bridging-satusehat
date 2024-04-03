@@ -10,9 +10,9 @@ class RsDokterService
     {
         try {
             $headers = [
-                'X-TOKEN' => env('SIFA_SATUSEHAT_SERVICE_TOKEN'),
+                'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
             ];
-            $request = Http::withHeaders($headers)->get(env('SIFA_SATUSEHAT_SERVICE_URL') . '/dokter/detail/' . $kodeDokter);
+            $request = Http::withHeaders($headers)->get(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/dokter/detail/' . $kodeDokter);
             $response = $request->getBody()->getContents();
             $result = json_decode($response, true);
 

@@ -24,6 +24,33 @@ class DocumentationController extends Controller
         return view('pages.docs.index');
     }
 
+    public function docs()
+    {
+        $title = $this->prefix . ' ' . 'Perkenalan';
+
+        return view($this->view . 'docs', compact('title'));
+    }
+    public function instalasi()
+    {
+        $title = $this->prefix . ' ' . 'instalasi';
+
+
+        return view($this->view . 'instalasi', compact('title'));
+    }
+    public function patient()
+    {
+        $title = $this->prefix . ' ' . 'Patient';
+
+
+        return view($this->view . 'Patient', compact('title'));
+    }
+    public function dokter()
+    {
+        $title = $this->prefix . ' ' . 'dokter';
+
+        return view($this->view . 'dokter', compact('title'));
+    }
+
     public function location()
     {
         $title = $this->prefix . ' ' . 'Location';
@@ -39,6 +66,7 @@ class DocumentationController extends Controller
         $l_daysofweek     = LocationDTO::getDaysOfWeek();
         $l_serviceClass   = LocationDTO::getServiceClass();
         $l_type           = LocationDTO::getType();
+
         return view($this->view . 'location', compact('title', 'l_identifier', 'l_status', 'l_operational', 'l_modes', 'l_system', 'l_use', 'l_addressUse', 'l_addressType', 'l_physical', 'l_daysofweek', 'l_serviceClass', 'l_type'));
     }
 

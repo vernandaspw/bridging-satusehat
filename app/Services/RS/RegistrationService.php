@@ -24,12 +24,12 @@ class RegistrationService
             $httpClient = new Client([
                 'headers' => [
                     'Content-Type' => 'application/json',
-                    'X-TOKEN' => env('SIFA_SATUSEHAT_SERVICE_TOKEN'),
+                    'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
                 ],
                 'query' => $query,
             ]);
 
-            $request = $httpClient->get(env('SIFA_SATUSEHAT_SERVICE_URL') . '/registration/rajal');
+            $request = $httpClient->get(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/registration/rajal');
 
             // $request = $this->httpClient->get('https://daftar.rsumm.co.id/api.simrs/pendaftaran', [
             //     'query' => $queryParams,
@@ -60,12 +60,12 @@ class RegistrationService
             $httpClient = new Client([
                 'headers' => [
                     'Content-Type' => 'application/json',
-                    'X-TOKEN' => env('SIFA_SATUSEHAT_SERVICE_TOKEN'),
+                    'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
                 ],
                 'query' => $query,
             ]);
 
-            $request = $httpClient->get(env('SIFA_SATUSEHAT_SERVICE_URL') . '/registration/rajal/date');
+            $request = $httpClient->get(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/registration/rajal/date');
 
             // Mengambil respons dari API
             $response = $request->getBody()->getContents();
@@ -102,12 +102,12 @@ class RegistrationService
             $httpClient = new Client([
                 'headers' => [
                     'Content-Type' => 'application/json',
-                    'X-TOKEN' => env('SIFA_SATUSEHAT_SERVICE_TOKEN'),
+                    'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
                 ],
                 'query' => $query,
             ]);
 
-            $request = $httpClient->get(env('SIFA_SATUSEHAT_SERVICE_URL') . '/registration/rajal/lastday');
+            $request = $httpClient->get(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/registration/rajal/lastday');
 
             // Mengambil respons dari API
             $response = $request->getBody()->getContents();
@@ -126,13 +126,13 @@ class RegistrationService
         $httpClient = new Client([
             'headers' => [
                 'Content-Type' => 'application/json',
-                'X-TOKEN' => env('SIFA_SATUSEHAT_SERVICE_TOKEN'),
+                'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
             ],
         ]);
 
-        $request = $httpClient->get(env('SIFA_SATUSEHAT_SERVICE_URL') . '/registration/rajal/detail?noreg=' . $noReg, [
+        $request = $httpClient->get(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/registration/rajal/detail?noreg=' . $noReg, [
             'headers' => [
-                'X-TOKEN' => env('SIFA_SATUSEHAT_SERVICE_TOKEN'),
+                'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
             ],
         ]);
         $response = $request->getBody()->getContents();
@@ -148,7 +148,7 @@ class RegistrationService
             $httpClient = new Client([
                 'headers' => [
                     'Content-Type' => 'application/json',
-                    'X-TOKEN' => env('SIFA_SATUSEHAT_SERVICE_TOKEN'),
+                    'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
                 ],
                 'body' => json_encode([
                     'noreg' => $noreg,
@@ -157,7 +157,7 @@ class RegistrationService
                 ]),
             ]);
 
-            $request = $httpClient->post(env('SIFA_SATUSEHAT_SERVICE_URL') . '/registration/update/encounterid');
+            $request = $httpClient->post(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/registration/update/encounterid');
             $response = $request->getBody()->getContents();
 
             $statusCode = $request->getStatusCode();

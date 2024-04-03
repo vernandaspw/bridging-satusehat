@@ -57,7 +57,7 @@
 
                 <div class="form-group">
                     <div class="custom-control custom-checkbox">
-                        <input type="checkbox"
+                        <input checked type="checkbox"
                             name="remember"
                             class="custom-control-input"
                             tabindex="3"
@@ -73,6 +73,11 @@
                         tabindex="4">
                         Login
                     </button>
+                    <a href="{{ url('docs', []) }}"
+                        class="btn btn-secondary btn-lg btn-block"
+                        tabindex="4">
+                        Dokumentasi
+                    </a>
                 </div>
             </form>
             <div class="mt-4 mb-3 text-center">

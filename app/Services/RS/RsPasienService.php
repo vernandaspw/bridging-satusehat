@@ -30,11 +30,11 @@ class RsPasienService
             $httpClient = new Client([
                 'headers' => [
                     'Content-Type' => 'application/json',
-                    'X-TOKEN' => env('SIFA_SATUSEHAT_SERVICE_TOKEN'),
+                    'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
                 ],
                 'query' => $query,
             ]);
-            $request = $httpClient->get(env('SIFA_SATUSEHAT_SERVICE_URL') . '/ss/pasien');
+            $request = $httpClient->get(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/ss/pasien');
 
             // Mengambil respons dari API
             $response = $request->getBody()->getContents();

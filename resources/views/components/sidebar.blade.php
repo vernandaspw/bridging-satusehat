@@ -103,8 +103,8 @@
                 </ul>
             </li> --}}
             @endif
-            <li class="menu-header">Docs</li>
-            <li class="nav-item dropdown  {{ Request::is('dc*') ? 'active' : '' }}">
+            {{-- <li class="menu-header">Docs</li> --}}
+            {{-- <li class="nav-item dropdown  {{ Request::is('dc*') ? 'active' : '' }}">
                 <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i
                         class="fas fa-rocket"></i><span>Documentation</span></a>
                 <ul class="dropdown-menu">
@@ -118,11 +118,13 @@
                         <a class="nav-link" href="{{ route('docs.encounter') }}">Encounter</a>
                     </li>
                 </ul>
-            </li>
+            </li> --}}
+
         </ul>
 
         <div class="hide-sidebar-mini mt-4 mb-4 p-3">
-            <a href="{{ route('documentation.index') }}" class="btn btn-primary btn-lg btn-block btn-icon-split">
+
+            <a href="{{ url('docs') }}"  target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg btn-block btn-icon-split">
                 <i class="fas fa-rocket"></i> Documentation
             </a>
         </div>

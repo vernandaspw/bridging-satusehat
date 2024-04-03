@@ -152,10 +152,18 @@ Route::middleware('auth')->group(function () {
         Route::get('/docs-encounter', [DocumentationController::class, 'encounter'])->name('docs.encounter');
     });
 
-
-
     // credits
     Route::get('/documentation', [DocumentationController::class, 'index'])->name('documentation.index');
 });
 
 require __DIR__ . '/auth.php';
+
+  // DOCUMENTATION
+    Route::get('docs', [DocumentationController::class, 'docs'])->name('docs.docs');
+    Route::get('docs/instalasi', [DocumentationController::class, 'instalasi'])->name('docs.instalasi');
+    Route::get('docs/patient', [DocumentationController::class, 'patient'])->name('docs.patient');
+    Route::get('docs/dokter', [DocumentationController::class, 'dokter'])->name('docs.dokter');
+    Route::get('docs/organization', [DocumentationController::class, 'organization'])->name('docs.organization');
+    Route::get('docs/location', [DocumentationController::class, 'location'])->name('docs.location');
+    Route::get('docs/encounter', [DocumentationController::class, 'encounter'])->name('docs.encounter');
+

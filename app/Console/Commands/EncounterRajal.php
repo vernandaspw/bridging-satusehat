@@ -58,9 +58,9 @@ class EncounterRajal extends Command
                         $ihs = $patient['entry'][0]['resource']['id'];
 
                         $headers = [
-                            'X-TOKEN' => env('SIFA_SATUSEHAT_SERVICE_TOKEN'),
+                            'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
                         ];
-                        $request = Http::withHeaders($headers)->get(env('SIFA_SATUSEHAT_SERVICE_URL') . '/pasien/detail/' . $nik);
+                        $request = Http::withHeaders($headers)->get(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/pasien/detail/' . $nik);
                         $response = $request->getBody()->getContents();
                         $pasienData = json_decode($response, true);
                         $pasien = $pasienData['data'];
@@ -73,9 +73,9 @@ class EncounterRajal extends Command
                             // $this->updateIHSPasien($pasien['no_mr'], $ihs);
                             try {
                                 $httpClient = new Client();
-                                $request = $httpClient->post(env('SIFA_SATUSEHAT_SERVICE_URL') . '/pasien/ihs/' . $pasien['no_mr'], [
+                                $request = $httpClient->post(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/pasien/ihs/' . $pasien['no_mr'], [
                                     'headers' => [
-                                        'X-TOKEN' => env('SIFA_SATUSEHAT_SERVICE_TOKEN'),
+                                        'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
                                     ],
                                     'body' => json_encode([
                                         'kodeIHS' => $ihs,
@@ -142,9 +142,9 @@ class EncounterRajal extends Command
                                         try {
                                             // dd($kodeDokter, $kodeIHS);
                                             $httpClient = new Client();
-                                            $request = $httpClient->post(env('SIFA_SATUSEHAT_SERVICE_URL') . '/dokter/ihs/' . $kodeDokter, [
+                                            $request = $httpClient->post(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/dokter/ihs/' . $kodeDokter, [
                                                 'headers' => [
-                                                    'X-TOKEN' => env('SIFA_SATUSEHAT_SERVICE_TOKEN'),
+                                                    'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
                                                 ],
                                                 'body' => json_encode([
                                                     'kodeIHS' => $kodeIHSDokter,
