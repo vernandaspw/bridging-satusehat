@@ -13,7 +13,7 @@
 
         <ul class="sidebar-menu">
             <li class=' {{ env('IS_PROD') == true ? 'bg-success' : 'bg-warning' }}'>
-                <a class="nav-link" href="javascript:void()"><i class="fas fa-rocket"></i> Mode
+                <a class="nav-link text-dark" href="javascript:void()"><i class="fas fa-rocket"></i> Mode
                     {{ env('IS_PROD') == true ? 'PRODUCTION' : 'SANBOX' }}</a>
             </li>
 
