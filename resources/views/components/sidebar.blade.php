@@ -3,12 +3,12 @@
         <div class="sidebar-brand">
             <a href="">
                 <img src="{{ asset('img/logo.png') }}" width="30" alt="">
-                SIFA-SATUSEHAT
+                {{ env('APP_BRAND') }}
                 <img src="{{ asset('img/SatuSehat.png') }}" width="30" alt="">
             </a>
         </div>
         <div class="sidebar-brand sidebar-brand-sm">
-            <a href="">Sifa-SatuSehat</a>
+            <a href="">{{ env('APP_BRAND') }}</a>
         </div>
 
         <ul class="sidebar-menu">
