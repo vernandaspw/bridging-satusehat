@@ -31,8 +31,18 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="">Data Belum Terkirim {{ $registrations['not_encounter'] }}</div>
-                            <div class="">Encounter Terkirim {{ $registrations['encounter'] }}</div>
+                        <div class="mb-1">
+                            <b>Encounter Production</b>
+                            <div class="">Belum Terkirim {{ $registrations['not_encounter'] }}</div>
+                            <div class="">Terkirim {{ $registrations['encounter'] }}</div>
+
+                        </div>
+                            <div class="">
+                                <b>Encounter Sanbox</b>
+                            <div class="">Belum Terkirim {{ $registrations['not_encounter_sanbox'] }}</div>
+                            <div class="">Terkirim {{ $registrations['encounter_sanbox'] }}</div>
+
+                            </div>
                         </form>
                     </div>
                 </div>
