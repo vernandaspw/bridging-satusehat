@@ -90,6 +90,7 @@ class Pasien extends Model
                 ],
                 'body' => json_encode([
                     'kodeIHS' => $kodeIHS,
+                    'isProd' => env('IS_PROD')
                 ]),
             ]);
             $response = $request->getBody()->getContents();
