@@ -31,7 +31,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="" wire:poll>
+                            <div class="">
                                 <div class="mb-1">
                                     <b>Encounter Production</b>
                                     <div class="">Belum Terkirim {{ $registrations['not_encounter'] }}</div>
