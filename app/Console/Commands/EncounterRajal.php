@@ -41,7 +41,7 @@ class EncounterRajal extends Command
         // mengambil data yang tidak memiliki encounterID bersadarkan APP_TIPE
         $tanggal = date('2024-03-23');
         // hari = 1 (1 hari terakhir / kemarin)
-        $hari = 3;
+        $hari = 1;
         try {
             $registrations = RegistrationService::getLastDay($tanggal, $hari);
 
