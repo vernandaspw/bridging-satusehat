@@ -31,17 +31,19 @@
                                     </div>
                                 </div>
                             </div>
-                        <div class="mb-1">
-                            <b>Encounter Production</b>
-                            <div class="">Belum Terkirim {{ $registrations['not_encounter'] }}</div>
-                            <div class="">Terkirim {{ $registrations['encounter'] }}</div>
+                            <div class="" wire:poll>
+                                <div class="mb-1">
+                                    <b>Encounter Production</b>
+                                    <div class="">Belum Terkirim {{ $registrations['not_encounter'] }}</div>
+                                    <div class="">Terkirim {{ $registrations['encounter'] }}</div>
 
-                        </div>
-                            <div class="">
-                                <b>Encounter Sanbox</b>
-                            <div class="">Belum Terkirim {{ $registrations['not_encounter_sanbox'] }}</div>
-                            <div class="">Terkirim {{ $registrations['encounter_sanbox'] }}</div>
+                                </div>
+                                <div class="">
+                                    <b>Encounter Sanbox</b>
+                                    <div class="">Belum Terkirim {{ $registrations['not_encounter_sanbox'] }}</div>
+                                    <div class="">Terkirim {{ $registrations['encounter_sanbox'] }}</div>
 
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -108,7 +110,8 @@
                                             <td>{{ $item['ss_encounter_id_sanbox'] }}</td>
                                             <td width="15%">
                                                 {{-- <a href="http://" class="btn btn-info"><i class="fas fa-info-circle"></i></a> --}}
-                                                <a href="javascript:void()" wire:click="kirim('{{ $item['no_registrasi'] }}')"
+                                                <a href="javascript:void()"
+                                                    wire:click="kirim('{{ $item['no_registrasi'] }}')"
                                                     class="btn btn-primary">Kirim</a>
                                             </td>
                                         </tr>
