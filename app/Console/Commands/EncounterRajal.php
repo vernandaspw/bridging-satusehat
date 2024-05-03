@@ -39,9 +39,9 @@ class EncounterRajal extends Command
         // kirim data yang tidak memiliki encounterID jika prod dan encounterIDsanbox jika sanbox
 
         // mengambil data yang tidak memiliki encounterID bersadarkan APP_TIPE
-        $tanggal = date('2024-04-05');
+        $tanggal = date('Y-m-d');
         // hari = 1 (1 hari terakhir / kemarin)
-        $hari = 0;
+        $hari = 1;
         try {
             $registrations = RegistrationService::getLastDay($tanggal, $hari);
 
