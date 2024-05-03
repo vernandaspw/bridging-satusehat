@@ -39,7 +39,7 @@ class EncounterRajal extends Command
         // kirim data yang tidak memiliki encounterID jika prod dan encounterIDsanbox jika sanbox
 
         // mengambil data yang tidak memiliki encounterID bersadarkan APP_TIPE
-        $tanggal = date('2024-04-04');
+        $tanggal = date('2024-04-05');
         // hari = 1 (1 hari terakhir / kemarin)
         $hari = 0;
         try {
