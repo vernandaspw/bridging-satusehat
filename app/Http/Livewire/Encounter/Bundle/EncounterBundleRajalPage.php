@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Encounter\Bundle;
 
 use App\Models\Dokter;
 use App\Models\Location;
+use App\Models\LogEncounter;
 use App\Models\Pasien;
 use App\Services\RS\RegistrationService;
 use App\Services\SatuSehat\AccessToken;
@@ -194,6 +195,9 @@ class EncounterBundleRajalPage extends Component
 
     public function kirim($noReg)
     {
+        $log_cek = LogEncounter::where('noreg', $noReg)->first();
+        $status = null;
+        $jenis = 'rajal';
         $registration = RegistrationService::getByKodeReg($noReg);
         // if (!empty($registration['ss_encounter_id'])) {
         //     $errorMessage = 'sudah pernah mengirim encounter';
@@ -204,6 +208,18 @@ class EncounterBundleRajalPage extends Component
         //  CEK PASIEN
         if (empty($registration['nik'])) {
             $errorMessage = 'nik pasien is not available.';
+            if ($log_cek) {
+                $log_cek->status = $errorMessage;
+                $log_cek->updated_by = auth()->user()->id;
+                $log_cek->save();
+             }else{
+                $log = new LogEncounter();
+                $log->jenis = $jenis;
+                $log->noreg = $noReg;
+                $log->status = $errorMessage;
+                $log->updated_by = auth()->user()->id;
+                $log->save();
+            }
             return $this->emit('error', $errorMessage);
         }
         $nik_pasien = $registration['nik'];
@@ -211,12 +227,36 @@ class EncounterBundleRajalPage extends Component
         $ihs_pasien = $this->getIhsPasienByNIK($registration['nik']);
         if (empty($ihs_pasien)) {
             $errorMessage = 'The patient has not been registered in SatuSehat';
+            if ($log_cek) {
+                $log_cek->status = $errorMessage;
+                $log_cek->updated_by = auth()->user()->id;
+                $log_cek->save();
+            }else{
+                $log = new LogEncounter();
+                $log->jenis = $jenis;
+                $log->noreg = $noReg;
+                $log->status = $errorMessage;
+                $log->updated_by = auth()->user()->id;
+                $log->save();
+            }
             return $this->emit('error', $errorMessage);
         }
 
         //   CEK DOKTER
         if (empty($registration['nik_dokter'])) {
             $errorMessage = 'Sorry, NIK DOKTER TIDAK ADA';
+            if ($log_cek) {
+                $log_cek->status = $errorMessage;
+                $log_cek->updated_by = auth()->user()->id;
+                $log_cek->save();
+            }else{
+                $log = new LogEncounter();
+                $log->jenis = $jenis;
+                $log->noreg = $noReg;
+                $log->status = $errorMessage;
+                $log->updated_by = auth()->user()->id;
+                $log->save();
+            }
             return $this->emit('error', $errorMessage);
         }
         $kode_dokter = $registration['kode_dokter'];
@@ -224,7 +264,19 @@ class EncounterBundleRajalPage extends Component
         $nama_dokter = $registration['nama_dokter'];
         $ihs_dokter = $this->getIhsDokterByNIK($kode_dokter, $registration['nik_dokter']);
         if (empty($ihs_dokter)) {
-            $errorMessage = 'IThe practitioner has not been registered in SatuSehat';
+            $errorMessage = 'The practitioner has not been registered in SatuSehat';
+            if ($log_cek) {
+                $log_cek->status = $errorMessage;
+                $log_cek->updated_by = auth()->user()->id;
+                $log_cek->save();
+            }else{
+                $log = new LogEncounter();
+                $log->jenis = $jenis;
+                $log->noreg = $noReg;
+                $log->status = $status;
+                $log->updated_by = auth()->user()->id;
+                $log->save();
+            }
             return $this->emit('error', $errorMessage);
         }
 
@@ -236,6 +288,18 @@ class EncounterBundleRajalPage extends Component
 
         if (empty($location)) {
             $errorMessage = 'ID location is not available.';
+            if ($log_cek) {
+                $log_cek->status = $errorMessage;
+                $log_cek->updated_by = auth()->user()->id;
+                $log_cek->save();
+            }else{
+                $log = new LogEncounter();
+                $log->jenis = $jenis;
+                $log->noreg = $noReg;
+                $log->status = $errorMessage;
+                $log->updated_by = auth()->user()->id;
+                $log->save();
+            }
             return $this->emit('error', $errorMessage);
         }
         $location_id = $location->location_id;
@@ -272,11 +336,42 @@ class EncounterBundleRajalPage extends Component
 
             if (empty($encounterID)) {
                 $errorMessage = 'EncounterID tidak valid';
+                if ($log_cek) {
+                    $log_cek->status = $errorMessage;
+                    $log_cek->updated_by = auth()->user()->id;
+                    $log_cek->save();
+                }else{
+                    $log = new LogEncounter();
+                    $log->jenis = $jenis;
+                    $log->noreg = $noReg;
+                    $log->status = $errorMessage;
+                    $log->updated_by = auth()->user()->id;
+                    $log->save();
+                }
                 return $this->emit('error', $errorMessage);
             }
 
             RegistrationService::updateEncounterId($noReg, $encounterID);
             $this->fetchData($this->tanggal);
+
+            // create tabel log_encounter
+            // pengecekan noreg, jika log_encounter ada, update
+
+            if ($log_cek) {
+                $log_cek->ihs = $encounterID;
+                $log_cek->status = $status;
+                $log_cek->updated_by = auth()->user()->id;
+                $log_cek->save();
+            }else{
+                $log = new LogEncounter();
+                $log->jenis = 'rajal';
+                $log->noreg = $noReg;
+                $log->status = $status;
+                $log->ihs = $encounterID;
+                $log->updated_by = auth()->user()->id;
+                $log->save();
+            }
+
             $message = 'Bundle Encounter data has been created successfully.';
             return $this->emit('success', $message);
         } catch (\Throwable $e) {

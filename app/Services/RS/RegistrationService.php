@@ -38,7 +38,7 @@ class RegistrationService
             // Mengambil respons dari API
             $response = $request->getBody()->getContents();
             $data = json_decode($response, true);
-
+                // dd($data);
             return $data['data']; // Mengambil bagian 'data' dari respons
         } catch (\Exception $e) {
             // Tangani kesalahan

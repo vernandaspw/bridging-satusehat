@@ -75,7 +75,11 @@
                                         <th scope="col">RoomCode</th>
                                         <th scope="col">RoomName</th>
                                         <th scope="col">EncounterID</th>
+                                        @if (!env('IS_PROD'))
                                         <th scope="col">EncounterIDsanbox</th>
+                                        @endif
+                                        <th scope="col">status</th>
+                                        <th>Oleh</th>
                                         <th scope="col">Aksi</th>
                                     </tr>
                                 </thead>
@@ -107,7 +111,11 @@
                                             <td>{{ $item['RoomCode'] }}</td>
                                             <td>{{ $item['RoomName'] }}</td>
                                             <td>{{ $item['ss_encounter_id'] }}</td>
+                                            @if (!env('IS_PROD'))
                                             <td>{{ $item['ss_encounter_id_sanbox'] }}</td>
+                                            @endif
+                                            <td>{{ $item['log'] ? $item['log']['status'] : '-' }}</td>
+                                            <td>{{ $item['log'] ? $item['log']['user']['name'] : '-' }}</td>
                                             <td width="15%">
                                                 {{-- <a href="http://" class="btn btn-info"><i class="fas fa-info-circle"></i></a> --}}
                                                 <a href="javascript:void()"
