@@ -79,7 +79,7 @@
                                         <th scope="col">EncounterIDsanbox</th>
                                         @endif
                                         <th scope="col">status</th>
-                                        <th>Oleh</th>
+                                        {{-- <th>Oleh</th> --}}
                                         <th scope="col">Aksi</th>
                                     </tr>
                                 </thead>
@@ -115,7 +115,7 @@
                                             <td>{{ $item['ss_encounter_id_sanbox'] }}</td>
                                             @endif
                                             <td>{{ $item['log'] ? $item['log']['status'] : '-' }}</td>
-                                            <td>{{ $item['log'] ? $item['log']['user']['name'] : '-' }}</td>
+                                            {{-- <td>{{ $item['log'] ? $item['log']['user']['name'] : '-' }}</td> --}}
                                             <td width="15%">
                                                 {{-- <a href="http://" class="btn btn-info"><i class="fas fa-info-circle"></i></a> --}}
                                                 <a href="javascript:void()"
