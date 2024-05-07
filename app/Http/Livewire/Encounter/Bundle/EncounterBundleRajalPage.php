@@ -365,14 +365,14 @@ class EncounterBundleRajalPage extends Component
 
             if ($log_cek) {
                 $log_cek->ihs = $encounterID;
-                $log_cek->status = $status;
+                $log_cek->status = null;
                 $log_cek->updated_by = auth()->user()->id;
                 $log_cek->save();
             }else{
                 $log = new LogEncounter();
                 $log->jenis = 'rajal';
                 $log->noreg = $noReg;
-                $log->status = $status;
+                $log->status = null;
                 $log->ihs = $encounterID;
                 $log->updated_by = auth()->user()->id;
                 $log->save();
@@ -400,6 +400,10 @@ class EncounterBundleRajalPage extends Component
                 // dd($registration);
                 $nik = $registration['nik'];
                 //  CEK NIK PASIEN
+
+                // jika status != null tidak perlu di proses
+                // simpan tetapi tetap jalankan porses berikutnya
+
                 if (!empty($nik)) {
                     $patient = PatientService::getRequest('Patient', ['identifier' => $nik]);
 
