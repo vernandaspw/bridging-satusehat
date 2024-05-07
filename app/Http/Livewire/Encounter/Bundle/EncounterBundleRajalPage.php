@@ -220,6 +220,7 @@ class EncounterBundleRajalPage extends Component
                 $log->updated_by = auth()->user()->id;
                 $log->save();
             }
+            $this->tanggal();
             return $this->emit('error', $errorMessage);
         }
         $nik_pasien = $registration['nik'];
@@ -239,6 +240,7 @@ class EncounterBundleRajalPage extends Component
                 $log->updated_by = auth()->user()->id;
                 $log->save();
             }
+            $this->tanggal();
             return $this->emit('error', $errorMessage);
         }
 
@@ -257,6 +259,7 @@ class EncounterBundleRajalPage extends Component
                 $log->updated_by = auth()->user()->id;
                 $log->save();
             }
+            $this->tanggal();
             return $this->emit('error', $errorMessage);
         }
         $kode_dokter = $registration['kode_dokter'];
@@ -277,6 +280,7 @@ class EncounterBundleRajalPage extends Component
                 $log->updated_by = auth()->user()->id;
                 $log->save();
             }
+            $this->tanggal();
             return $this->emit('error', $errorMessage);
         }
 
@@ -300,6 +304,7 @@ class EncounterBundleRajalPage extends Component
                 $log->updated_by = auth()->user()->id;
                 $log->save();
             }
+            $this->tanggal();
             return $this->emit('error', $errorMessage);
         }
         $location_id = $location->location_id;
@@ -348,6 +353,7 @@ class EncounterBundleRajalPage extends Component
                     $log->updated_by = auth()->user()->id;
                     $log->save();
                 }
+                 $this->tanggal();
                 return $this->emit('error', $errorMessage);
             }
 
@@ -373,6 +379,7 @@ class EncounterBundleRajalPage extends Component
             }
 
             $message = 'Bundle Encounter data has been created successfully.';
+            $this->tanggal();
             return $this->emit('success', $message);
         } catch (\Throwable $e) {
             dd($e->getMessage());
