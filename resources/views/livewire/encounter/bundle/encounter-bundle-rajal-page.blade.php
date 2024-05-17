@@ -28,11 +28,13 @@
                                             style="margin-top: 30px;">Filter</button>
                                         <button wire:click="kirimPerTanggal" type="button" class="btn btn-primary mr-2"
                                             style="margin-top: 30px;">Kirim data yg discharge Per Tanggal</button>
+                                        <button wire:click="kirimPerTanggal2" type="button" class="btn btn-primary mr-2"
+                                            style="margin-top: 30px;">Kirim data yg discharge Per Tanggal tes</button>
                                     </div>
                                 </div>
                             </div>
                             <div class="">
-                                <div class="mb-1">
+                                {{-- <div class="mb-1">
                                     <b>Encounter Production</b>
                                     <div class="">Belum Terkirim {{ $registrations['not_encounter'] }}</div>
                                     <div class="">Terkirim {{ $registrations['encounter'] }}</div>
@@ -43,7 +45,7 @@
                                     <div class="">Belum Terkirim {{ $registrations['not_encounter_sanbox'] }}</div>
                                     <div class="">Terkirim {{ $registrations['encounter_sanbox'] }}</div>
 
-                                </div>
+                                </div> --}}
                             </div>
                         </form>
                     </div>
