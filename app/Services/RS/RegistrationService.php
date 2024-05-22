@@ -38,11 +38,48 @@ class RegistrationService
             // Mengambil respons dari API
             $response = $request->getBody()->getContents();
             $data = json_decode($response, true);
-                // dd($data);
+            // dd($data);
             return $data['data']; // Mengambil bagian 'data' dari respons
         } catch (\Exception $e) {
             // Tangani kesalahan
             return []; // Mengembalikan array kosong jika terjadi kesalahan
+        }
+    }
+
+    public static function getCount($year = null, $month = null)
+    {
+        try {
+            $query = [];
+
+            if ($year != null) {
+                $query['year'] = $year;
+            } else {
+                $query['year'] = date('Y');
+            }
+
+            if ($year != null) {
+                $query['month'] = $month;
+            } else {
+                $query['month'] = date('m');
+            }
+
+            $httpClient = new Client([
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
+                ],
+                'query' => $query,
+            ]);
+
+            $request = $httpClient->get(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/registration/rajal/count');
+
+            // Mengambil respons dari API
+            $response = $request->getBody()->getContents();
+            $data = json_decode($response, true);
+
+            return $data['data'];
+        } catch (\Throwable $e) {
+            dd($e->getMessage());
         }
     }
 
@@ -97,7 +134,6 @@ class RegistrationService
             }
 
             $query['isProd'] = env('IS_PROD');
-
 
             $httpClient = new Client([
                 'headers' => [

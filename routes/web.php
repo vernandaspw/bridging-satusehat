@@ -17,6 +17,7 @@ use App\Http\Controllers\Mapping\MappingEncounterController;
 use App\Http\Controllers\Manage\UserController;
 use App\Http\Controllers\MasterData\LocationController;
 use App\Http\Controllers\MasterData\OrganizationController;
+use App\Http\Livewire\DashboardPage;
 use App\Http\Livewire\Encounter\Bundle\EncounterBundleIgdPage;
 use App\Http\Livewire\Encounter\Bundle\EncounterBundleRajalPage;
 use App\Http\Livewire\Encounter\Bundle\EncounterBundleRanapPage;
@@ -37,9 +38,11 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/dashboard', DashboardPage::class)->middleware('auth');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
