@@ -408,7 +408,6 @@ class EncounterBundleRajalPage extends Component
                     $patient = PatientService::getRequest('Patient', ['identifier' => $nik]);
 
                     if (!empty($patient['entry'])) {
-
                         $ihs = $patient['entry'][0]['resource']['id'];
 
                         $headers = [
@@ -522,7 +521,6 @@ class EncounterBundleRajalPage extends Component
                                     $ihs_dokter = $kodeIHSDokter;
 
                                     if (!empty($ihs_dokter)) {
-
                                         // CEK LOKASI
                                         $location = Location::where('identifier_value', $registration['RoomCode'])
                                             ->orWhere('identifier_value', $registration['RoomID'])

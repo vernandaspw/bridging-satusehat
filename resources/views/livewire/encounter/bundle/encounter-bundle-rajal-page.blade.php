@@ -22,14 +22,14 @@
                                             value="{{ request('tanggal') }}">
                                     </div>
                                 </div>
-                                <div class="col-md-3 filter-buttons">
+                                <div class="col-md-9 filter-buttons">
                                     <div class="form-group d-flex align-items-end">
                                         <button type="button" wire:click='tanggal()' class="btn btn-success mr-2"
                                             style="margin-top: 30px;">Filter</button>
                                         <button wire:click="kirimPerTanggal" type="button" class="btn btn-primary mr-2"
-                                            style="margin-top: 30px;">Kirim data yg discharge Per Tanggal</button>
+                                            style="margin-top: 30px;">Send Data Base A Date (Prod)</button>
                                         <button wire:click="kirimPerTanggal2" type="button" class="btn btn-primary mr-2"
-                                            style="margin-top: 30px;">Kirim data yg discharge Per Tanggal tes</button>
+                                            style="margin-top: 30px;">Send Data Base A Date (Sim)</button>
                                     </div>
                                 </div>
                             </div>

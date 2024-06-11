@@ -95,6 +95,7 @@ class OrganizationController extends Controller
             }
             return redirect()->route($this->routeIndex)->with('toast_success', $message);
         } catch (\Throwable $th) {
+            dd($th);
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data');
         }
     }
