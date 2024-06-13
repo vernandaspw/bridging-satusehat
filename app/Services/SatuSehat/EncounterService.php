@@ -341,7 +341,7 @@ class EncounterService
             $data = $response->getBody()->getContents();
             return json_decode($data, true);
         } catch (\Throwable $e) {
-            dd($e->getMessage());
+            dd($e->getMessage().$jsonData);
         }
     }
 }

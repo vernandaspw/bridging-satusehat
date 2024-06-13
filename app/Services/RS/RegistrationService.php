@@ -179,6 +179,12 @@ class RegistrationService
 
     public static function updateEncounterId($noreg, $encounter_id)
     {
+        if (env('IS_PROD') == false) {
+            $status = 0;
+        } else {
+            $status = 1;
+        }
+
         try {
             // dd($kodeDokter, $kodeIHS);
             $httpClient = new Client([
@@ -189,7 +195,7 @@ class RegistrationService
                 'body' => json_encode([
                     'noreg' => $noreg,
                     'encounter_id' => $encounter_id,
-                    'isProd' => env('IS_PROD'),
+                    'isProd' => $status,
                 ]),
             ]);
 

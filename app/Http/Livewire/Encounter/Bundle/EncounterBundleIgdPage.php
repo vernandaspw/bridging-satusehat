@@ -5,8 +5,12 @@ namespace App\Http\Livewire\Encounter\Bundle;
 use App\Services\RS\RegistrationServiceIgdRanap;
 use App\Services\SatuSehat\PatientService;
 use App\Services\SatuSehat\PracticionerService;
+use App\Services\SatuSehat\EncounterService;
+use App\Services\RS\RegistrationService;
 use App\Models\Location;
 use GuzzleHttp\Client;
+use App\Services\SatuSehat\AccessToken;
+use App\Services\SatuSehat\ConfigSatuSehat;
 
 use Livewire\Component;
 
@@ -34,94 +38,128 @@ class EncounterBundleIgdPage extends Component
         // dd($this->registrations);
     }
 
-    public function updated(){
-      $this->fetchData($this->tanggal);
+    public function updated()
+    {
+        $this->fetchData($this->tanggal);
     }
 
-    public function SimpanPasienIHS($nik,$rm){
+    public function SimpanPasienIHS($nik, $rm)
+    {
         // $this->updateIHSPasien($pasien['no_mr'], $ihs);
-       
+
         $patient = PatientService::getRequest('Patient', ['identifier' => $nik]);
-        $ihs = $patient['entry'][0]['resource']['id'];
-
-        if(env('IS_PROD')){
-            $status = TRUE;
-        }else{
-            $status = FALSE;
-        }
-
-        try {          
-            // SERVICE SIMPAN IHS PASIEN
-            $httpClient = new Client();
-            $request = $httpClient->post(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/pasien/ihs/' . $rm, [
-                'headers' => [
-                    'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
-                ],
-                'body' => json_encode([
-                    'kodeIHS' => $ihs,
-                    'isProd' => $status
-                ]),
-            ]);
-            $response = $request->getBody()->getContents();
-            $statusCode = $request->getStatusCode();
-
-            if ($statusCode != 200) {
-                throw new \Exception("Failed to update IHS: " . $statusCode);
+     
+        if (!empty($patient['entry'])) {       
+            $ihs = $patient['entry'][0]['resource']['id'];
+            
+            if (env('IS_PROD') == false) {
+                $status = false;
+            } else {
+                $status = true;
             }
-       
-            if(env('IS_PROD')){
-                return $response['data']['ihs'];
-            }else{
-                return $response['data']['ihs_sanbox'];
+
+            try {
+                // SERVICE SIMPAN IHS PASIEN
+                $httpClient = new Client();
+                $res = $httpClient->post(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/pasien/ihs/' . $rm, [
+                    'headers' => [
+                        'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
+                        'Content-Type' => 'application/json',
+                    ],
+                    'body' => json_encode([
+                        'kodeIHS' => $ihs,
+                        'isProd' => $status
+                    ]),
+                ]);
+                // $response = $request->getBody()->getContents();              
+                $response = json_decode($res->getBody()->getContents());              
+                $statusCode = $res->getStatusCode();
+           
+                if ($statusCode != 200) {
+                    throw new \Exception("Failed to update IHS: " . $statusCode);
+                }
+
+                if ($status) {
+                    return $response->data->ihs;
+                } else {
+                    return $response->data->ihs_sanbox;
+                }
+            } catch (\Exception $e) {
+                dd($e->getMessage());
+                // Tangani kesalahan
+                return []; // Mengembalikan array kosong jika terjadi kesalahan
             }
-        } catch (\Exception $e) {
-            dd($e->getMessage());
-            // Tangani kesalahan
-            return []; // Mengembalikan array kosong jika terjadi kesalahan
+        } else {
+            return "0";
         }
     }
 
-    public function SimpanDokterIHS($kode_dokter,$nik_dokter){
+    public function SimpanDokterIHS($kode_dokter, $nik_dokter)
+    {
         // $this->updateIHSPasien($pasien['no_mr'], $ihs);
         //ParamedicIHS,ParamedicIHSsanbox
-       
-        $Paramedic = PracticionerService::getRequest('Practitioner', ['identifier' => $nik_dokter]);
-        $kodeIHSDokter = $Paramedic['entry'][0]['resource']['id'];
-
-        if(env('IS_PROD')){
-            $status = TRUE;
-        }else{
-            $status = FALSE;
+        $params = [
+            'identifier' => $nik_dokter,
+        ];
+        $token = AccessToken::token();
+        $url = ConfigSatuSehat::setUrl() . 'Practitioner';
+        if (isset($params['identifier'])) {
+            $params['identifier'] = 'https://fhir.kemkes.go.id/id/nik|' . $params['identifier'];
         }
 
-        try {          
-            // SERVICE SIMPAN IHS Dokter
-            $httpClient = new Client();
-            $request = $httpClient->post(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/dokter/ihs/' . $kode_dokter, [
-                'headers' => [
-                    'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
-                ],
-                'body' => json_encode([
-                    'kodeIHS' => $kodeIHSDokter,
-                    'isProd' => $status
-                ]),
-            ]);
-            $response = $request->getBody()->getContents();
-            $statusCode = $request->getStatusCode();
+        if (!empty($params)) {
+            $url .= '?' . http_build_query($params);
+        }
+        $httpClient = new Client();
+        $response = $httpClient->get($url, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+                'Accept' => 'application/json',
+            ],
+        ]);
+        $data = $response->getBody()->getContents();
+        $Paramedic = json_decode($data, true);
+        if (!empty($Paramedic['entry'])) {
+            $kodeIHSDokter = $Paramedic['entry'][0]['resource']['id'];
+            // dd($kodeIHSDokter);
+            if (env('IS_PROD') == false) {
+                $status = false;
+            } else {
+                $status = true;
+            }
+           
+            try {
+                // SERVICE SIMPAN IHS Dokter
+                $httpClient = new Client();
+                $request = $httpClient->post(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/dokter/ihs/' . $kode_dokter, [
+                    'headers' => [
+                        'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
+                        'Content-Type' => 'application/json',
+                    ],
+                    'body' => json_encode([
+                        'kodeIHS' => $kodeIHSDokter,
+                        'isProd' => $status
+                    ]),
+                ]);
+                $response = json_decode($request->getBody()->getContents());  
+                $statusCode = $request->getStatusCode();
+                // dd($response);
+                if ($statusCode != 200) {
+                    throw new \Exception("Failed to update IHS: " . $statusCode);
+                }
 
-            if ($statusCode != 200) {
-                throw new \Exception("Failed to update IHS: " . $statusCode);
+                if ($status) {
+                    return $response->data->ihs;
+                } else {
+                    return $response->data->ihs_sanbox;
+                }
+            } catch (\Exception $e) {
+                dd($e->getMessage());
+                // Tangani kesalahan
+                return []; // Mengembalikan array kosong jika terjadi kesalahan
             }
-       
-            if(env('IS_PROD')){
-                return $response['data']['ParamedicIHS'];
-            }else{
-                return $response['data']['ParamedicIHSsanbox'];
-            }
-        } catch (\Exception $e) {
-            dd($e->getMessage());
-            // Tangani kesalahan
-            return []; // Mengembalikan array kosong jika terjadi kesalahan
+        } else {
+            return "0";
         }
     }
 
@@ -130,42 +168,49 @@ class EncounterBundleIgdPage extends Component
         // kirim yang telah discharge dan belum memiliki encounterID
         $tanggal = $this->tanggal;
         try {
-            $registrations = RegistrationServiceIgdRanap::getLastDay($tanggal, 0,'IGD');
+            $registrations = RegistrationServiceIgdRanap::getLastDay($tanggal, 0, 'IGD');
 
-            
             foreach ($registrations as $registration) {
                 // $registration=1;
                 $nik = $registration['nik'];
                 $nik_dokter = $registration['nik_dokter'];
                 $kode_dokter = $registration['kode_dokter'];
                 //  CEK NIK PASIEN
-          
+
                 // $registration['location_ihs'] - $registration['ihs_pasien'] - $registration['ihs_dokter']
                 if (empty($registration['ihs_pasien'])) {
-                    $registration['ihs_pasien']=$this->SimpanPasienIHS($nik,$registration['no_mr']);                    
+                    if (!empty($nik)) {
+                        if ($this->SimpanPasienIHS($nik, $registration['no_mr']) != "0") {
+                            $registration['ihs_pasien'] = $this->SimpanPasienIHS($nik, $registration['no_mr']);
+                        }
+                    }
                 }
-               
-                if (empty($registration['ihs_dokter'])) {
-                    $registration['ihs_dokter']=$this->SimpanDokterIHS($kode_dokter,$nik_dokter);                    
-                }
-                
-                 if (!empty($registration['ihs_pasien']) && !empty($registration['ihs_dokter'])) {
-                    $location = Location::where('identifier_value', $registration['RoomCode'])
-                    ->orWhere('identifier_value', $registration['RoomID'])
-                    ->orWhere('identifier_value', $registration['ServiceUnitID'])
-                    ->first();
 
-                    $location_id = $registration['location_id'];
-                    $location_name = $registration['location_name'];
+                if (empty($registration['ihs_dokter'])) {
+                    if (!empty($nik_dokter)) {
+                        if ($this->SimpanDokterIHS($kode_dokter, $nik_dokter) != "0") {
+                            $registration['ihs_dokter'] = $this->SimpanDokterIHS($kode_dokter, $nik_dokter);
+                        }
+                    }
+                }
+
+                if (!empty($registration['ihs_pasien']) && !empty($registration['ihs_dokter']) && !empty($registration['location_ihs'])) {
+                   
+                  
+                    $location = Location::where('location_id', $registration['location_ihs'])->first();
+                   
+                    $location_id = $registration['location_ihs'];
+                    $location_name = $location->name;
                     $organization_id = $location->organization_id;
                     $noReg = $registration['no_registrasi'];
+                   
                     $body = [
                         'kodeReg' => $noReg,
                         'status' => 'arrived',
-                        'patientId' => $ihs_pasien,
-                        'patientName' => $nama_pasien,
+                        'patientId' => $registration['ihs_pasien'],
+                        'patientName' => $registration['nama_pasien'],
                         'practitionerIhs' => $registration['ihs_dokter'],
-                        'practitionerName' => $nama_dokter,
+                        'practitionerName' => $registration['nama_dokter'],
                         'organizationId' => $organization_id,
                         'locationId' => $location_id,
                         'locationName' => $location_name,
@@ -174,9 +219,7 @@ class EncounterBundleIgdPage extends Component
                         'DischargeDateTime' => $registration['DischargeDateTime'],
                         'diagnosas' => $registration['diagnosas'],
                     ];
-                    try {
-                        // send API
-                        // jika
+                    try {                        
 
                         $resultApi = EncounterService::PostEncounterCondition($body);
                         if (!empty($resultApi['entry'][0]['response']['resourceID'])) {
@@ -200,7 +243,7 @@ class EncounterBundleIgdPage extends Component
                         $errorMessage = 'Coba ulang ' . $e->getMessage();
                         return $this->emit('error', $errorMessage);
                     }
-                 }
+                }
             }
             $message = 'Bundle Encounter data has been created successfully.';
             return $this->emit('success', $message);
@@ -210,7 +253,6 @@ class EncounterBundleIgdPage extends Component
             return response()->json(['error' => 'Failed to fetch data'], 500);
             // return view('error-view', ['error' => 'Failed to fetch data']);
         }
-
     }
 
 
@@ -221,7 +263,7 @@ class EncounterBundleIgdPage extends Component
 
 
     public function fetchData($tanggal = null, $page = null)
-    {    
+    {
         try {
             if (!empty($tanggal)) {
                 $this->tanggal = $tanggal;
@@ -229,8 +271,8 @@ class EncounterBundleIgdPage extends Component
             if (!empty($page)) {
                 $this->page = $page;
             }
-            $this->registrations = RegistrationServiceIgdRanap::getData($this->tanggal, $this->page,'IGD');
-            
+            $this->registrations = RegistrationServiceIgdRanap::getData($this->tanggal, $this->page, 'IGD');
+
             // dd($this->registrations);
         } catch (\Exception $e) {
             // Tangani kesalahan
