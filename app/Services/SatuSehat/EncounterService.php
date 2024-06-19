@@ -325,7 +325,7 @@ class EncounterService
             $url = ConfigSatuSehat::setUrl();
 
             $bodyRaw = self::bodyPostEncounterCondition($body);
-            // dd($bodyRaw);
+        
             $jsonData = json_encode($bodyRaw, JSON_PRETTY_PRINT);
 
             $httpClient = new Client(

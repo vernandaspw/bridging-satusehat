@@ -6,8 +6,9 @@ use GuzzleHttp\Client;
 
 class RegistrationServiceIgdRanap
 {
-    public static function getData($tanggal = null, $page = null,$tipe = null)
+    public static function getData($tanggal = null, $page = null, $tipe = null)
     {
+        
         try {
             $query = [];
 
@@ -20,36 +21,30 @@ class RegistrationServiceIgdRanap
             if ($page != null) {
                 $query['page'] = $page;
             }
-            // dd($page);
+
             $httpClient = new Client([
                 'headers' => [
-                    'Content-Type' => 'application/json',
                     'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
+                    // 'Content-Type' => 'application/json',
                 ],
                 'query' => $query,
             ]);
-
-            switch($tipe){
-                case  'IGD' :
-                    $request = $httpClient->get(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/registration/igd');
-                break;
-                case 'RANAP':
-                    $request = $httpClient->get(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/registration/ranap');
-                break;
-                default :
-            }   
+            $tipeG = strtolower($tipe);
+            
+            $request = $httpClient->get(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/registration/'. $tipeG);
             
             // Mengambil respons dari API
-            $response = $request->getBody()->getContents();
             
+            $response = $request->getBody()->getContents();
             $data = json_decode($response, true);
-            // dd($data);
+
             return $data['data']; // Mengambil bagian 'data' dari respons
         } catch (\Exception $e) {
             // Tangani kesalahan
             return []; // Mengembalikan array kosong jika terjadi kesalahan
         }
     }
+
 
     public static function getCount($year = null, $month = null)
     {
@@ -148,18 +143,18 @@ class RegistrationServiceIgdRanap
                 'query' => $query,
             ]);
 
-            switch($tipe){
-                case  'IGD' :
+            switch ($tipe) {
+                case  'IGD':
                     $request = $httpClient->get(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/registration/igd/lastday');
-                break;
+                    break;
                 case 'RANAP':
                     $request = $httpClient->get(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/registration/ranap/lastday');
-                break;
-                default :
-            }   
+                    break;
+                default:
+            }
 
 
-           
+
 
             // Mengambil respons dari API
             $response = $request->getBody()->getContents();
@@ -173,7 +168,7 @@ class RegistrationServiceIgdRanap
         }
     }
 
-    public static function getByKodeReg($noReg)
+    public static function getByKodeReg($noReg, $tipe)
     {
         $httpClient = new Client([
             'headers' => [
@@ -182,11 +177,28 @@ class RegistrationServiceIgdRanap
             ],
         ]);
 
-        $request = $httpClient->get(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/registration/rajal/detail?noreg=' . $noReg, [
-            'headers' => [
-                'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
-            ],
-        ]);
+        switch ($tipe) {
+            case  'IGD':
+                $request = $httpClient->get(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/registration/igd/detail?noreg=' . $noReg, [
+                    'headers' => [
+                        'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
+                        'Content-Type' => 'application/json',
+                    ],
+                ]);
+                break;
+            case 'RANAP':
+                $request = $httpClient->get(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/registration/ranap/detail?noreg=' . $noReg, [
+                    'headers' => [
+                        'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
+                        'Content-Type' => 'application/json',
+                    ],
+                ]);
+                break;
+            default:
+        }
+
+
+
         $response = $request->getBody()->getContents();
         $data = json_decode($response, true);
 
@@ -228,5 +240,4 @@ class RegistrationServiceIgdRanap
             return []; // Mengembalikan array kosong jika terjadi kesalahan
         }
     }
-
 }

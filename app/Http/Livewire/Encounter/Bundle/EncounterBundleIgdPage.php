@@ -7,6 +7,8 @@ use App\Services\SatuSehat\PatientService;
 use App\Services\SatuSehat\PracticionerService;
 use App\Services\SatuSehat\EncounterService;
 use App\Services\RS\RegistrationService;
+use App\Models\Pasien;
+use App\Models\LogEncounter;
 use App\Models\Location;
 use GuzzleHttp\Client;
 use App\Services\SatuSehat\AccessToken;
@@ -163,6 +165,246 @@ class EncounterBundleIgdPage extends Component
         }
     }
 
+    
+
+    public function getIhsPasienByNIK($nik)
+    {
+        $patient = PatientService::getRequest('Patient', ['identifier' => $nik]);
+
+        if (empty($patient['entry'])) {
+            return;
+        }
+        $ihs = $patient['entry'][0]['resource']['id'];
+
+        $pasien = Pasien::getByNik($nik);
+
+        if (env('IS_PROD')) {
+            $pasienIHS = $pasien['ihs'];
+        } else {
+            $pasienIHS = $pasien['ihs_sanbox'];
+        }
+        if ($ihs != $pasienIHS) {
+            $this->updateIHSPasien($pasien['no_mr'], $ihs);
+        }
+
+        return $ihs;
+    }
+
+    Public Function LogPatientNik($log_cek,$jenis,$noReg){
+        $errorMessage = 'nik pasien is not available.';
+        if ($log_cek) {
+            $log_cek->status = $errorMessage;
+            $log_cek->updated_by = auth()->user()->id;
+            $log_cek->save();
+        } else {
+            $log = new LogEncounter();
+            $log->jenis = $jenis;
+            $log->noreg = $noReg;
+            $log->status = $errorMessage;
+            $log->updated_by = auth()->user()->id;
+            $log->save();
+        }
+        return $errorMessage;
+    }
+
+    Public function LogPatientIHS($log_cek,$jenis,$noReg){
+        $errorMessage = 'The patient has not been registered in SatuSehat';
+        if ($log_cek) {
+            $log_cek->status = $errorMessage;
+            $log_cek->updated_by = auth()->user()->id;
+            $log_cek->save();
+        } else {
+            $log = new LogEncounter();
+            $log->jenis = $jenis;
+            $log->noreg = $noReg;
+            $log->status = $errorMessage;
+            $log->updated_by = auth()->user()->id;
+            $log->save();
+        }
+        return $errorMessage;
+    }
+
+    Public function LogParamedicNik($log_cek,$jenis,$noReg){
+        $errorMessage = 'Sorry, NIK DOKTER TIDAK ADA';
+            if ($log_cek) {
+                $log_cek->status = $errorMessage;
+                $log_cek->updated_by = auth()->user()->id;
+                $log_cek->save();
+            } else {
+                $log = new LogEncounter();
+                $log->jenis = $jenis;
+                $log->noreg = $noReg;
+                $log->status = $errorMessage;
+                $log->updated_by = auth()->user()->id;
+                $log->save();
+            }
+            return $errorMessage;
+    }
+
+    Public function LogParamedicIHS($log_cek,$jenis,$noReg){
+            $errorMessage = 'The practitioner has not been registered in SatuSehat';
+            if ($log_cek) {
+                $log_cek->status = $errorMessage;
+                $log_cek->updated_by = auth()->user()->id;
+                $log_cek->save();
+            } else {
+                $log = new LogEncounter();
+                $log->jenis = $jenis;
+                $log->noreg = $noReg;
+                $log->status = $errorMessage;
+                $log->updated_by = auth()->user()->id;
+                $log->save();
+            }
+            return $errorMessage;
+    }
+
+    public function LogLocation($log_cek,$jenis,$noReg){
+        $errorMessage = 'ID location is not available.';
+        if ($log_cek) {
+            $log_cek->status = $errorMessage;
+            $log_cek->updated_by = auth()->user()->id;
+            $log_cek->save();
+        } else {
+            $log = new LogEncounter();
+            $log->jenis = $jenis;
+            $log->noreg = $noReg;
+            $log->status = $errorMessage;
+            $log->updated_by = auth()->user()->id;
+            $log->save();
+        }
+
+        return $errorMessage;
+    }
+
+    
+
+    public function kirim($noReg)
+    {
+        $log_cek = LogEncounter::where('noreg', $noReg)->first();
+        $status = null;
+        $jenis = 'IGD';
+
+        $registration = RegistrationServiceIgdRanap::getByKodeReg($noReg,$jenis);
+
+        //  CEK PASIEN
+        $this->tanggal();
+        if (empty($registration['nik'])) {
+            $errorMessage = $this->LogPatientNik($log_cek,$jenis,$noReg);
+            return $this->emit('error', $errorMessage);
+        }
+      
+        $nama_pasien = $registration['nama_pasien'];
+        // LANGSUNG CEK IHS UPDATE DAN LANGSUNG SIMPAN
+        $ihs_pasien = $this->SimpanPasienIHS($registration['nik'],$registration['no_mr']);
+        if (empty($ihs_pasien)) {
+            $errorMessage = $this->LogPatientIHS($log_cek,$jenis,$noReg);
+            return $this->emit('error', $errorMessage);
+        }
+
+        //   CEK DOKTER
+        if (empty($registration['nik_dokter'])) {
+            $errorMessage =  $this->LogParamedicNik($log_cek,$jenis,$noReg);
+            return $this->emit('error', $errorMessage);
+        }
+
+        $kode_dokter = $registration['kode_dokter'];
+        $nama_dokter = $registration['nama_dokter'];
+        $ihs_dokter = $this->SimpanDokterIHS($kode_dokter, $registration['nik_dokter']);
+        if (empty($ihs_dokter)) {           
+           $errorMessage = $this->LogParamedicIHS($log_cek,$jenis,$noReg);
+           return $this->emit('error', $errorMessage);
+        }
+
+        // CEK LOKASI
+        $location = Location::where('identifier_value', $registration['RoomCode'])
+            ->orWhere('identifier_value', $registration['RoomID'])
+            ->orWhere('identifier_value', $registration['ServiceUnitID'])
+            ->first();
+
+        if (empty($location)) {
+            $errorMessage =  $this->LogLocation($log_cek,$jenis,$noReg);
+            return $this->emit('error', $errorMessage);
+        }
+
+        $location_id = $location->location_id;
+        $location_name = $location->name;
+        $organization_id = $location->organization_id;
+
+        $body = [
+            'kodeReg' => $noReg,
+            'status' => 'arrived',
+            'patientId' => $ihs_pasien,
+            'patientName' => $nama_pasien,
+            'practitionerIhs' => $ihs_dokter,
+            'practitionerName' => $nama_dokter,
+            'organizationId' => $organization_id,
+            'locationId' => $location_id,
+            'locationName' => $location_name,
+            'statusHistory' => 'arrived',
+            'RegistrationDateTime' => $registration['RegistrationDateTime'],
+            'DischargeDateTime' => $registration['DischargeDateTime'],
+            'diagnosas' => $registration['diagnosas'],
+        ];
+
+        try {
+            // send API
+            $resultApi = EncounterService::PostEncounterCondition($body);
+            if (!empty($resultApi['entry'][0]['response']['resourceID'])) {
+                $encounterID = $resultApi['entry'][0]['response']['resourceID'];
+            } else {
+                $url = $resultApi['entry'][0]['response']['location'];
+                $uuid = explode('/', parse_url($url, PHP_URL_PATH))[4];
+                $encounterID = $uuid;
+            }
+
+            if (empty($encounterID)) {
+                $errorMessage = 'EncounterID tidak valid';
+                if ($log_cek) {
+                    $log_cek->status = $errorMessage;
+                    $log_cek->updated_by = auth()->user()->id;
+                    $log_cek->save();
+                } else {
+                    $log = new LogEncounter();
+                    $log->jenis = $jenis;
+                    $log->noreg = $noReg;
+                    $log->status = $errorMessage;
+                    $log->updated_by = auth()->user()->id;
+                    $log->save();
+                }
+                return $this->emit('error', $errorMessage);
+            }
+
+            RegistrationService::updateEncounterId($noReg, $encounterID);
+            $this->fetchData($this->tanggal);
+
+            // create tabel log_encounter
+            // pengecekan noreg, jika log_encounter ada, update
+
+            if ($log_cek) {
+                $log_cek->ihs = $encounterID;
+                $log_cek->status = null;
+                $log_cek->updated_by = auth()->user()->id;
+                $log_cek->save();
+            } else {
+                $log = new LogEncounter();
+                $log->jenis = 'rajal';
+                $log->noreg = $noReg;
+                $log->status = null;
+                $log->ihs = $encounterID;
+                $log->updated_by = auth()->user()->id;
+                $log->save();
+            }
+
+            $message = 'Bundle Encounter data has been created successfully.';
+            $this->tanggal();
+            return $this->emit('success', $message);
+        } catch (\Throwable $e) {
+            dd($e->getMessage());
+            $errorMessage = 'Coba ulang ' . $e->getMessage();
+            return $this->emit('error', $errorMessage);
+        }
+    }
+
     public function kirimPerTanggal()
     {
         // kirim yang telah discharge dan belum memiliki encounterID
@@ -219,6 +461,7 @@ class EncounterBundleIgdPage extends Component
                         'DischargeDateTime' => $registration['DischargeDateTime'],
                         'diagnosas' => $registration['diagnosas'],
                     ];
+                   
                     try {                        
 
                         $resultApi = EncounterService::PostEncounterCondition($body);
