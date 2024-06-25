@@ -34,32 +34,19 @@
                                     <h4>Form Create</h4>
                                 </div>
                                 <div class="card-body">
-
-                                    <div class="form-group row mb-4">
-                                        <label
-                                            class="col-form-label text-md-right col-12 col-md-3 col-lg-3">ServiceUnitID</label>
-                                        <div class="col-sm-12 col-md-7">
-                                            <input type="text" class="form-control" name="ServiceUnitID">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row mb-4">
-                                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">RoomID</label>
-                                        <div class="col-sm-12 col-md-7">
-                                            <input type="text" class="form-control" name="RoomID">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row mb-4">
-                                        <label
-                                            class="col-form-label text-md-right col-12 col-md-3 col-lg-3">RoomCode</label>
-                                        <div class="col-sm-12 col-md-7">
-                                            <input type="text" class="form-control" name="RoomCode">
-                                        </div>
-                                    </div>
                                     <div class="form-group row mb-4">
                                         <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Identifier
                                             Value (RoomID, RoomCode, ServiceUnitID)<code>*</code></label>
-                                        <div class="col-sm-12 col-md-7">
+                                        <div class="col-sm-12 col-md-5">
                                             <input type="text" class="form-control" name="identifier_value">
+                                        </div>
+                                         <div class="col-sm-12 col-md-2">
+                                            <select class="form-control">
+                                                <option value="ServiceUnitID">ServiceUnitID</option>
+                                                <option value="RoomID">RoomID</option>
+                                                <option value="BedID">BedID</option>
+                                                <option value="RoomCode">RoomCode</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="form-group row mb-4">

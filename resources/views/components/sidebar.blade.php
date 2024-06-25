@@ -32,17 +32,15 @@
                         GeneralConsent</a>
                 </li> --}}
             {{-- @endif --}}
-            @if (auth()->user()->role == 'admin')
+            @if (auth()->user()->role == 'admin')                
                 <li class="nav-item dropdown {{ Request::is('md*') ? 'active' : '' }}">
                     <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i
                             class="fas fa-columns"></i>
                         <span>Master Data</span></a>
                     <ul class="dropdown-menu">
-
                         <li class="{{ Request::is('md/patient*') ? 'active' : '' }}">
                             <a class="nav-link" href="{{ route('patient.index') }}">Patient</a>
                         </li>
-
                         <li class="{{ Request::is('md/dokter*') ? 'active' : '' }}">
                             <a class="nav-link" href="{{ route('dokter.index') }}">Practitioner</a>
                         </li>
@@ -51,6 +49,22 @@
                         </li>
                         <li class="{{ Request::is('md/location*') ? 'active' : '' }}">
                             <a class="nav-link" href="{{ route('location.index') }}">Location</a>
+                        </li>                      
+                    </ul>
+                </li>
+                <li class="nav-item dropdown {{ Request::is('penunjang*') ? 'active' : '' }}">
+                    <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i
+                            class="fas fa-columns"></i>
+                        <span>Penunjang</span></a></a>
+                    <ul class="dropdown-menu">
+                          <li class="{{ Request::is('penunjang/farmasi*') ? 'active' : '' }}">
+                            <a class="nav-link" href="{{ url('penunjang/farmasi') }}">Farmasi</a>
+                        </li>
+                        <li class="{{ Request::is('penunjang/laboratorium*') ? 'active' : '' }}">
+                            <a class="nav-link" href="{{ url('penunjang/laboratorium') }}">Laboratorium</a>
+                        </li>
+                        <li class="{{ Request::is('penunjang/radiologi*') ? 'active' : '' }}">
+                            <a class="nav-link" href="{{ url('penunjang/radiologi') }}">Radiologi</a>
                         </li>
                     </ul>
                 </li>
@@ -66,11 +80,11 @@
                             <a class="nav-link" href="{{ url('encounter/bundle/rajal', []) }}">Rawat Jalan</a>
                         </li>
                         <li class="{{ Request::is('encounter/bundle/ranap') ? 'active' : '' }}">
-                            <a class="nav-link text-danger" href="{{ url('encounter/bundle/ranap', []) }}">Rawat
+                            <a class="nav-link" href="{{ url('encounter/bundle/ranap', []) }}">Rawat
                                 Inap</a>
                         </li>
                         <li class="{{ Request::is('encounter/bundle/igd') ? 'active' : '' }}">
-                            <a class="nav-link text-danger" href="{{ url('encounter/bundle/igd', []) }}">IGD</a>
+                            <a class="nav-link" href="{{ url('encounter/bundle/igd', []) }}">IGD</a>
                         </li>
                     </ul>
                 </li>

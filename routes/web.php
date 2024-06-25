@@ -22,6 +22,9 @@ use App\Http\Livewire\Encounter\Bundle\EncounterBundleIgdPage;
 use App\Http\Livewire\Encounter\Bundle\EncounterBundleRajalPage;
 use App\Http\Livewire\Encounter\Bundle\EncounterBundleRanapPage;
 use App\Http\Livewire\Pendaftaran\PendaftaranPatientGCPage;
+use App\Http\Livewire\Penunjang\Farmasi;
+use App\Http\Livewire\Penunjang\Radiologi;
+use App\Http\Livewire\Penunjang\Laboratorium;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +51,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // PENUNJANG DATA
+    Route::prefix('penunjang')->middleware('auth')->group(function () {
+        Route::get('farmasi', Farmasi::class);
+        Route::get('laboratorium',Laboratorium::class);
+        Route::get('radiologi', Radiologi::class);
+    });
+
+
     // MASTER DATA
     Route::prefix('md')->middleware('auth')->group(function () {
         // ORGANIZATION
@@ -84,7 +96,6 @@ Route::middleware('auth')->group(function () {
 
     // CORE
     Route::get('pendaftaran/patient-gc', PendaftaranPatientGCPage::class);
-
     Route::get('encounter/bundle/rajal', EncounterBundleRajalPage::class);
     Route::get('encounter/bundle/ranap', EncounterBundleRanapPage::class);
     Route::get('encounter/bundle/igd', EncounterBundleIgdPage::class);
