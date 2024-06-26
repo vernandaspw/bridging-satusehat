@@ -39,7 +39,7 @@
                                         <th scope="col">ItemID</th>
                                         <th scope="col">ItemCode</th>
                                         <th scope="col">Name</th>
-                                        <th scope="col">KFA+</th>
+                                        <th scope="col">LoinC</th>
                                         <th scope="col">Aksi</th>
                                     </tr>
                                 </thead>
@@ -50,7 +50,7 @@
                                             <td>{{ $item['ItemID'] }}</td>
                                             <td>{{ $item['ItemCode'] }}</td>
                                             <td>{{ $item['ItemName1'] }}</td>
-                                            <td>{{ $item['ItemID'] }}</td>
+                                            <td>{{ $item['KodeStandar'] }}</td>
                                             <td width="15%">
                                                 <a href="javascript:void()"
                                                     wire:click="kirim('{{ $item['ItemID'] }}')"

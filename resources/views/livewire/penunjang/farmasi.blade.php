@@ -50,7 +50,7 @@
                                             <td>{{ $item['ItemID'] }}</td>
                                             <td>{{ $item['ItemCode'] }}</td>
                                             <td>{{ $item['ItemName1'] }}</td>
-                                            <td>{{ $item['ItemID'] }}</td>
+                                            <td>{{ $item['KodeStandar'] }}</td>
                                             <td width="15%">
                                                 <a href="javascript:void()"
                                                     wire:click="kirim('{{ $item['ItemID'] }}')"
