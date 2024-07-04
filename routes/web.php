@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\Case\Encounter\EncounterCreate;
-use App\Http\Controllers\Case\Encounter\EncounterCreateController;
+// use App\Http\Controllers\Case\Encounter\EncounterCreate;
+// use App\Http\Controllers\Case\Encounter\EncounterCreateController;
 use App\Http\Controllers\DocumentationController;
 use App\Http\Livewire\Encounter\Bundle\EncounterBundlePage;
 use Illuminate\Support\Facades\Route;
@@ -101,7 +101,7 @@ Route::middleware('auth')->group(function () {
     Route::get('encounter/bundle/igd', EncounterBundleIgdPage::class);
 
     // CASE
-        Route::get('case/encounter/create', EncounterCreateController::class)->name('case.encounter.create');
+        // Route::get('case/encounter/create', EncounterCreateController::class)->name('case.encounter.create');
 
 
     // KUNJUNGAN

@@ -13,14 +13,14 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Console\Command;
 
-class EncounterRajal extends Command
+class EncounterRajalDay extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'encounter:rajal';
+    protected $signature = 'encounter:rajal-day';
 
     /**
      * The console command description.

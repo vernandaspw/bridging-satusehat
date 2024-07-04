@@ -310,6 +310,15 @@ class EncounterBundleRajalPage extends Component
         $location_id = $location->location_id;
         $location_name = $location->name;
         $organization_id = $location->organization_id;
+        // dd($registration['diagnosas']);
+
+        // mencari diagnosa utama
+
+        foreach ($registration['diagnosas'] as $diagnosa) {
+            if($diagnosa['pdiag_tipe'] == 'UTAMA') {
+                $diagnosaUtama = $diagnosa;
+            }
+        };
 
         $body = [
             'kodeReg' => $noReg,
@@ -325,7 +334,11 @@ class EncounterBundleRajalPage extends Component
             'RegistrationDateTime' => $registration['RegistrationDateTime'],
             'DischargeDateTime' => $registration['DischargeDateTime'],
             'diagnosas' => $registration['diagnosas'],
+            'diagnosa_utama' => $diagnosaUtama,
+            'observationNadi' => $registration['observationNadi'],
+            'procedures' => $registration['procedures']
         ];
+        // dd($body);
 
         try {
             // send API

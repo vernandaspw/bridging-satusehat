@@ -4,6 +4,7 @@ namespace App\Services\SatuSehat;
 
 use Carbon\Carbon;
 use DateTime;
+use DateTimeZone;
 use GuzzleHttp\Client;
 use Illuminate\Support\Str;
 
@@ -250,6 +251,7 @@ class EncounterService
         ];
 
         // conditions
+        $conditions = [];
         if (!empty($diagnosis)) {
             foreach ($diagnosis_data as $diagnosisItem) {
                 // dd($diagnosisItem);
@@ -305,14 +307,158 @@ class EncounterService
             }
         }
 
+        // $observationNadi = [];
+        if (!empty($body['observationNadi'])) {
+            $observationNadi =
+                [
+                "fullUrl" => "urn:uuid:" . Str::uuid(),
+                "resource" => [
+                    "resourceType" => "Observation",
+                    "status" => "final",
+                    "category" => [
+                        [
+                            "coding" => [
+                                [
+                                    "system" => "http://terminology.hl7.org/CodeSystem/observation-category",
+                                    "code" => "vital-signs",
+                                    "display" => "Vital Signs",
+                                ],
+                            ],
+                        ],
+                    ],
+                    "code" => [
+                        "coding" => [
+                            [
+                                "system" => "http://loinc.org",
+                                "code" => "8867-4",
+                                "display" => "Heart rate",
+                            ],
+                        ],
+                    ],
+                    "subject" => [
+                        "reference" => "Patient/" . $body['patientId'],
+                    ],
+                    "performer" => [
+                        [
+                            "reference" => "Practitioner/" . $body['practitionerIhs'],
+                        ],
+                    ],
+                    "encounter" => [
+                        "reference" => "urn:uuid:" . $uuidEncounter,
+                        "display" => "Pemeriksaan Fisik Nadi ",
+                    ],
+                    "effectiveDateTime" => $body['observationNadi']['date'] ? (DateTime::createFromFormat('Y-m-d H:i:s.u', $body['observationNadi']['date']))->setTimezone(new DateTimeZone('-07:00'))->format('Y-m-d\TH:i:sP') : '',
+                    "issued" => $body['observationNadi']['date'] ? (DateTime::createFromFormat('Y-m-d H:i:s.u', $body['observationNadi']['date']))->setTimezone(new DateTimeZone('-07:00'))->format('Y-m-d\TH:i:sP') : '',
+                    "valueQuantity" => [
+                        "value" => intval($body['observationNadi']['value']),
+                        "unit" => "beats/minute",
+                        "system" => "http://unitsofmeasure.org",
+                        "code" => "/min",
+                    ],
+                ],
+                "request" => [
+                    "method" => "POST",
+                    "url" => "Observation",
+                ],
+            ];
+
+        }
+        // dd($observationNadi);
+        $procedures = [];
+        if (!empty($body['procedures'])) {
+            foreach ($body['procedures'] as $key => $procedure) {
+                $procedures[] =
+                    [
+                    "fullUrl" => "urn:uuid:" . Str::uuid(),
+                    "resource" => [
+
+                        "resourceType" => "Procedure",
+                        "status" => "completed",
+                        "category" => [
+                            "coding" => [
+                                [
+                                    "system" => "http://snomed.info/sct",
+                                    "code" => "103693007",
+                                    "display" => "Diagnostic procedure",
+                                ],
+                            ],
+                            "text" => "Diagnostic procedure",
+                        ],
+                        "code" => [
+                            "coding" => [
+                                [
+                                    "system" => "http://hl7.org/fhir/sid/icd-9-cm",
+                                    "code" => $procedure['pprosedur_prosedur'],
+                                    "display" => "",
+                                ],
+                            ],
+                        ],
+                        "subject" => [
+                            "reference" => "Patient/" . $body['patientId'],
+                            "display" => $body['patientName'],
+                        ],
+                        "encounter" => [
+                            "reference" => "Encounter/" . $uuidEncounter,
+                            "display" => '',
+                        ],
+                        "performedPeriod" => [
+                            "start" => $procedure['created_at'] ? date_format(date_create_from_format('Y-m-d H:i:s.u', $procedure['created_at']), 'Y-m-d\TH:i:sP') : null,
+                            "end" => $procedure['created_at'] ? date_format(date_create_from_format('Y-m-d H:i:s.u', $procedure['created_at']), 'Y-m-d\TH:i:sP') : null,
+                        ],
+                        "performer" => [
+                            [
+                                "actor" => [
+                                    "reference" => "Practitioner/" . $body['practitionerIhs'],
+                                    "display" => $body['practitionerName'],
+                                ],
+                            ],
+                        ],
+                        "reasonCode" => [
+                            [
+                                "coding" => [
+                                    [
+                                        "system" => "http://hl7.org/fhir/sid/icd-10",
+                                        "code" => $body['diagnosa_utama']['pdiag_diagnosa'],
+                                        "display" => "",
+                                    ],
+                                ],
+                            ],
+                        ],
+                        "bodySite" => [
+                            [
+                                "coding" => [
+                                    [
+                                        "system" => "http://snomed.info/sct",
+                                        "code" => "302551006",
+                                        "display" => "Entire Thorax",
+                                    ],
+                                ],
+                            ],
+                        ],
+                        "note" => [
+                            [
+                                "text" => "",
+                            ],
+                        ],
+                    ],
+                    "request" => [
+                        "method" => "POST",
+                        "url" => "Procedure",
+                    ],
+                ];
+            }
+        }
+
         $data = [
             "resourceType" => "Bundle",
             "type" => "transaction",
-            "entry" => [
-                $encounter,
-                $condition,
-            ],
+            "entry" =>
+            array_merge([$encounter, $observationNadi],
+                $conditions,
+                $procedures
+            ),
         ];
+        // dd($data);
 
         return $data;
     }
@@ -325,7 +471,7 @@ class EncounterService
             $url = ConfigSatuSehat::setUrl();
 
             $bodyRaw = self::bodyPostEncounterCondition($body);
-        
+            // dd($bodyRaw);
             $jsonData = json_encode($bodyRaw, JSON_PRETTY_PRINT);
 
             $httpClient = new Client(
@@ -341,7 +487,7 @@ class EncounterService
             $data = $response->getBody()->getContents();
             return json_decode($data, true);
         } catch (\Throwable $e) {
-            dd($e->getMessage().$jsonData);
+            dd($e->getMessage());
         }
     }
 }
