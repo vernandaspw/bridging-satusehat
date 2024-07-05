@@ -309,7 +309,7 @@ class EncounterService
 
         $observationNadi = [];
         if (!empty($body['observationNadi'])) {
-            $observationNadi =
+            $observationNadi[] =
                 [
                 "fullUrl" => "urn:uuid:" . Str::uuid(),
                 "resource" => [
@@ -452,7 +452,8 @@ class EncounterService
             "resourceType" => "Bundle",
             "type" => "transaction",
             "entry" =>
-            array_merge([$encounter, $observationNadi],
+            array_merge([$encounter],
+                !empty($observationNadi) ? [$observationNadi] : [],
                 $conditions,
                 $procedures
             ),

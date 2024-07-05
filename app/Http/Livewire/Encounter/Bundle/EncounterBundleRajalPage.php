@@ -315,7 +315,7 @@ class EncounterBundleRajalPage extends Component
         // mencari diagnosa utama
 
         foreach ($registration['diagnosas'] as $diagnosa) {
-            if($diagnosa['pdiag_tipe'] == 'UTAMA') {
+            if ($diagnosa['pdiag_tipe'] == 'UTAMA') {
                 $diagnosaUtama = $diagnosa;
             }
         };
@@ -336,7 +336,7 @@ class EncounterBundleRajalPage extends Component
             'diagnosas' => $registration['diagnosas'],
             'diagnosa_utama' => $diagnosaUtama ? $diagnosaUtama : null,
             'observationNadi' => $registration['observationNadi'],
-            'procedures' => $registration['procedures']
+            'procedures' => $registration['procedures'],
         ];
         // dd($body);
 
@@ -544,6 +544,13 @@ class EncounterBundleRajalPage extends Component
                                             $location_name = $location->name;
                                             $organization_id = $location->organization_id;
                                             $noReg = $registration['no_registrasi'];
+
+                                            foreach ($registration['diagnosas'] as $diagnosa) {
+                                                if ($diagnosa['pdiag_tipe'] == 'UTAMA') {
+                                                    $diagnosaUtama = $diagnosa;
+                                                }
+                                            };
+
                                             $body = [
                                                 'kodeReg' => $noReg,
                                                 'status' => 'arrived',
@@ -558,7 +565,11 @@ class EncounterBundleRajalPage extends Component
                                                 'RegistrationDateTime' => $registration['RegistrationDateTime'],
                                                 'DischargeDateTime' => $registration['DischargeDateTime'],
                                                 'diagnosas' => $registration['diagnosas'],
+                                                'diagnosa_utama' => $diagnosaUtama ? $diagnosaUtama : null,
+                                                'observationNadi' => $registration['observationNadi'],
+                                                'procedures' => $registration['procedures'],
                                             ];
+                                            // dd($body);
                                             try {
                                                 // send API
                                                 // jika
