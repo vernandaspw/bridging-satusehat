@@ -334,7 +334,7 @@ class EncounterBundleRajalPage extends Component
             'RegistrationDateTime' => $registration['RegistrationDateTime'],
             'DischargeDateTime' => $registration['DischargeDateTime'],
             'diagnosas' => $registration['diagnosas'],
-            'diagnosa_utama' => $diagnosaUtama,
+            'diagnosa_utama' => $diagnosaUtama ? $diagnosaUtama : null,
             'observationNadi' => $registration['observationNadi'],
             'procedures' => $registration['procedures']
         ];

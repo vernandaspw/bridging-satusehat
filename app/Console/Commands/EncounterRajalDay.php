@@ -10,8 +10,8 @@ use App\Services\SatuSehat\ConfigSatuSehat;
 use App\Services\SatuSehat\EncounterService;
 use App\Services\SatuSehat\PatientService;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Http;
 
 class EncounterRajalDay extends Command
 {
@@ -177,6 +177,13 @@ class EncounterRajalDay extends Command
                                             $location_name = $location->name;
                                             $organization_id = $location->organization_id;
                                             $noReg = $registration['no_registrasi'];
+
+                                            foreach ($registration['diagnosas'] as $diagnosa) {
+                                                if($diagnosa['pdiag_tipe'] == 'UTAMA') {
+                                                    $diagnosaUtama = $diagnosa;
+                                                }
+                                            };
+
                                             $body = [
                                                 'kodeReg' => $noReg,
                                                 'status' => 'arrived',
@@ -191,6 +198,9 @@ class EncounterRajalDay extends Command
                                                 'RegistrationDateTime' => $registration['RegistrationDateTime'],
                                                 'DischargeDateTime' => $registration['DischargeDateTime'],
                                                 'diagnosas' => $registration['diagnosas'],
+                                                'diagnosa_utama' => $diagnosaUtama ? $diagnosaUtama : null,
+                                                'observationNadi' => $registration['observationNadi'],
+                                                'procedures' => $registration['procedures'],
                                             ];
                                             try {
                                                 // send API
@@ -230,7 +240,7 @@ class EncounterRajalDay extends Command
             // $message = 'Bundle Encounter data has been created successfully.';
             // return $this->emit('success', $message);
         } catch (\Exception $e) {
-            $this->comment('failed'. $e->getMessage());
+            $this->comment('failed' . $e->getMessage());
             dd($e);
             // Tangani kesalahan
             return response()->json(['error' => 'Failed to fetch data'], 500);
