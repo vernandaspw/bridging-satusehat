@@ -307,7 +307,7 @@ class EncounterService
             }
         }
 
-        // $observationNadi = [];
+        $observationNadi = [];
         if (!empty($body['observationNadi'])) {
             $observationNadi =
                 [
@@ -361,7 +361,6 @@ class EncounterService
                     "url" => "Observation",
                 ],
             ];
-
         }
         // dd($observationNadi);
         $procedures = [];
