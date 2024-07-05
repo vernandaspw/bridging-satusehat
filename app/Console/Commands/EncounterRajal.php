@@ -177,6 +177,13 @@ class EncounterRajal extends Command
                                             $location_name = $location->name;
                                             $organization_id = $location->organization_id;
                                             $noReg = $registration['no_registrasi'];
+
+                                            foreach ($registration['diagnosas'] as $diagnosa) {
+                                                if($diagnosa['pdiag_tipe'] == 'UTAMA') {
+                                                    $diagnosaUtama = $diagnosa;
+                                                }
+                                            };
+
                                             $body = [
                                                 'kodeReg' => $noReg,
                                                 'status' => 'arrived',
@@ -191,6 +198,9 @@ class EncounterRajal extends Command
                                                 'RegistrationDateTime' => $registration['RegistrationDateTime'],
                                                 'DischargeDateTime' => $registration['DischargeDateTime'],
                                                 'diagnosas' => $registration['diagnosas'],
+                                                'diagnosa_utama' => $diagnosaUtama ? $diagnosaUtama : null,
+                                                'observationNadi' => $registration['observationNadi'],
+                                                'procedures' => $registration['procedures'],
                                             ];
                                             try {
                                                 // send API
