@@ -53,7 +53,12 @@ class PatientService
             ],
         ]);
 
+        if($response->getStatusCode() != 200){
+            return null;
+        }
+
         $data = $response->getBody()->getContents();
         return json_decode($data, true);
+
     }
 }
