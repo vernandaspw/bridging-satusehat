@@ -460,8 +460,11 @@ class EncounterService
             }
         }
 
-        // $medications = [];
-        // if (!empty($body['medication'])) {
+        $medications = [];
+        // if (!empty($body['medications'])) {
+        //     foreach ($body['medications'] as $medication) {
+
+        //     }
         //     $medication_id = Str::uuid();
         //     $medications = [
         //         [
