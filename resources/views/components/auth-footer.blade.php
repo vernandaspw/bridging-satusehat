@@ -1,3 +1,3 @@
   <div class="simple-footer">
-      Copyright &copy; RSUMM 2024
+      Copyright &copy; RSUD SITI FATIMAH 2024
   </div>
