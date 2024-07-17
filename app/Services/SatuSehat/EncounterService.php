@@ -265,7 +265,7 @@ class EncounterService
 
         // conditions
         $conditions = [];
-        if (!empty($diagnosis)) {
+        if (!empty($diagnosis) && !empty($diagnosis_data)) {
             foreach ($diagnosis_data as $diagnosisItem) {
                 // dd($diagnosisItem);
                 $condition = [
