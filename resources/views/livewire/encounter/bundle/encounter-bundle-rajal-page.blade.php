@@ -26,10 +26,10 @@
                                     <div class="form-group d-flex align-items-end">
                                         <button type="button" wire:click='tanggal()' class="btn btn-success mr-2"
                                             style="margin-top: 30px;">Filter</button>
-                                        <button wire:click="kirimPerTanggal" type="button" class="btn btn-primary mr-2"
-                                            style="margin-top: 30px;">Send Data Base A Date (Prod)</button>
-                                        <button wire:click="kirimPerTanggal2" type="button" class="btn btn-primary mr-2"
-                                            style="margin-top: 30px;">Send Data Base A Date (Sim)</button>
+                                        {{-- <button wire:click="kirimPerTanggal" type="button" class="btn btn-primary mr-2"
+                                            style="margin-top: 30px;">Send Data Base A Date (Prod)</button> --}}
+                                        <button wire:click="kirimPerTanggal2()" type="button" class="btn btn-primary mr-2"
+                                            style="margin-top: 30px;">Send Data by a Date</button>
                                     </div>
                                 </div>
                             </div>

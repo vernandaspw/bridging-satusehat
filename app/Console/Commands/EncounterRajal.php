@@ -185,6 +185,8 @@ class EncounterRajal extends Command
                                                     $organization_id = $location->organization_id;
                                                     $noReg = $registration['no_registrasi'];
 
+
+                                                    $diagnosaUtama = null;
                                                     foreach ($registration['diagnosas'] as $diagnosa) {
                                                         if ($diagnosa['pdiag_tipe'] == 'UTAMA') {
                                                             $diagnosaUtama = $diagnosa;

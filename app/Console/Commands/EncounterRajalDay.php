@@ -56,6 +56,7 @@ class EncounterRajalDay extends Command
                 } else {
                     $encounterId = $registration['ss_encounter_id_sanbox'];
                 }
+
                 if (!empty($encounterId)) {
 
                     if (!empty($nik) && strlen($nik) == 16) {
@@ -84,7 +85,7 @@ class EncounterRajalDay extends Command
                                     }
                                     if ($ihs != $pasienIHS) {
                                         // $this->updateIHSPasien($pasien['no_mr'], $ihs);
-                                        try {
+
                                             $httpClient = new Client();
                                             $request = $httpClient->post(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/pasien/ihs/' . $pasien['no_mr'], [
                                                 'headers' => [
@@ -101,10 +102,7 @@ class EncounterRajalDay extends Command
                                             if ($statusCode != 200) {
                                                 throw new \Exception("Failed to update IHS: " . $statusCode);
                                             }
-                                        } catch (\Exception $e) {
-                                            dd($e->getMessage());
-                                            // Tangani kesalahan
-                                        }
+
                                     }
                                     $ihs_pasien = $ihs;
                                     $nik_pasien = $registration['nik'];
@@ -153,7 +151,7 @@ class EncounterRajalDay extends Command
                                                 }
                                                 if ($kodeIHSDokter != $dokterIHS) {
                                                     // $this->updateIHSDokter($kodeDokter, $kodeIHSDokter);
-                                                    try {
+
                                                         // dd($kodeDokter, $kodeIHS);
                                                         $httpClient = new Client();
                                                         $request = $httpClient->post(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/dokter/ihs/' . $kodeDokter, [
@@ -171,10 +169,7 @@ class EncounterRajalDay extends Command
                                                         if ($statusCode != 200) {
                                                             throw new \Exception("Failed to update IHS: " . $statusCode);
                                                         }
-                                                    } catch (\Exception $e) {
-                                                        dd($e->getMessage());
-                                                        // Tangani kesalahan
-                                                    }
+
                                                 }
 
                                                 $ihs_dokter = $kodeIHSDokter;
@@ -192,6 +187,7 @@ class EncounterRajalDay extends Command
                                                         $organization_id = $location->organization_id;
                                                         $noReg = $registration['no_registrasi'];
 
+                                                        $diagnosaUtama = null;
                                                         foreach ($registration['diagnosas'] as $diagnosa) {
                                                             if ($diagnosa['pdiag_tipe'] == 'UTAMA') {
                                                                 $diagnosaUtama = $diagnosa;
@@ -216,7 +212,7 @@ class EncounterRajalDay extends Command
                                                             'observationNadi' => $registration['observationNadi'],
                                                             'procedures' => $registration['procedures'],
                                                         ];
-                                                        try {
+
                                                             // send API
                                                             // jika
 
@@ -237,11 +233,7 @@ class EncounterRajalDay extends Command
                                                             RegistrationService::updateEncounterId($noReg, $encounterID);
                                                             // $this->fetchData($this->tanggal);
 
-                                                        } catch (\Throwable $e) {
-                                                            dd($e->getMessage());
-                                                            $errorMessage = 'Coba ulang ' . $e->getMessage();
-                                                            return $this->emit('error', $errorMessage);
-                                                        }
+
                                                     }
                                                 }
                                             }
@@ -258,9 +250,9 @@ class EncounterRajalDay extends Command
             // return $this->emit('success', $message);
         } catch (\Exception $e) {
             $this->comment('failed' . $e->getMessage());
-            dd($e);
+            // dd($e);
             // Tangani kesalahan
-            return response()->json(['error' => 'Failed to fetch data'], 500);
+            // return response()->json(['error' => 'Failed to fetch data'], 500);
             // return view('error-view', ['error' => 'Failed to fetch data']);
         }
 

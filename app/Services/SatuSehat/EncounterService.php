@@ -134,11 +134,12 @@ class EncounterService
         // diagnosis
         $diagnosis = [];
         $diagnosis_data = [];
+        $diagnosaUUID = Str::uuid();
         if (!empty($body['diagnosas'])) {
             // dd($body['diagnosas']);
             foreach ($body['diagnosas'] as $indexDiagnosa => $diagnosa) {
                 $item_data = [
-                    'uuid' => strval(Str::uuid()),
+                    'uuid' => $indexDiagnosa == 0 ? $diagnosaUUID : strval(Str::uuid()),
                     "code" => $diagnosa['pdiag_diagnosa'] ? $diagnosa['pdiag_diagnosa'] : '-',
                     'name' => '-',
                 ];
@@ -463,7 +464,10 @@ class EncounterService
         $medications = [];
         // if (!empty($body['medications'])) {
         //     foreach ($body['medications'] as $medication) {
-
+        //         $racikan = $medication['temp_flag_racikan'] != 0 ? true : false;
+        //         $kfa = $medication['kfa'];
+        //         $itemCode = $medication['item_code'];
+        //         $itemName =  $medication['item_name'];
         //     }
         //     $medication_id = Str::uuid();
         //     $medications = [
@@ -501,122 +505,25 @@ class EncounterService
         //                     "coding" => [
         //                         [
         //                             "system" => "http://sys-ids.kemkes.go.id/kfa",
-        //                             "code" => "93001019",
-        //                             "display" => "Rifampicin 150 mg / Isoniazid 75 mg / Pyrazinamide 400 mg / Ethambutol 275 mg Tablet Salut Selaput (KIMIA FARMA)",
+        //                             "code" => "" . $racikan ? null : $kfa,
+        //                             "display" => $racikan ? null : $itemName,
         //                         ],
         //                     ],
         //                 ],
         //                 "status" => "active",
         //                 "manufacturer" => [
-        //                     "reference" => "Organization/900001",
+        //                     "reference" => "Organization/" . env('SATU_SEHAT_ORGANIZATION_ID'),
         //                 ],
         //                 "form" => [
         //                     "coding" => [
         //                         [
         //                             "system" => "http://terminology.kemkes.go.id/CodeSystem/medication-form",
-        //                             "code" => "BS023",
-        //                             "display" => "Kaplet Salut Selaput",
+        //                             "code" => $itemCode,
+        //                             "display" => $itemName,
         //                         ],
         //                     ],
         //                 ],
-        //                 "ingredient" => [
-        //                     [
-        //                         "itemCodeableConcept" => [
-        //                             "coding" => [
-        //                                 [
-        //                                     "system" => "http://sys-ids.kemkes.go.id/kfa",
-        //                                     "code" => "91000330",
-        //                                     "display" => "Rifampin",
-        //                                 ],
-        //                             ],
-        //                         ],
-        //                         "isActive" => true,
-        //                         "strength" => [
-        //                             "numerator" => [
-        //                                 "value" => 150,
-        //                                 "system" => "http://unitsofmeasure.org",
-        //                                 "code" => "mg",
-        //                             ],
-        //                             "denominator" => [
-        //                                 "value" => 1,
-        //                                 "system" => "http://terminology.hl7.org/CodeSystem/v3-orderableDrugForm",
-        //                                 "code" => "TAB",
-        //                             ],
-        //                         ],
-        //                     ],
-        //                     [
-        //                         "itemCodeableConcept" => [
-        //                             "coding" => [
-        //                                 [
-        //                                     "system" => "http://sys-ids.kemkes.go.id/kfa",
-        //                                     "code" => "91000328",
-        //                                     "display" => "Isoniazid",
-        //                                 ],
-        //                             ],
-        //                         ],
-        //                         "isActive" => true,
-        //                         "strength" => [
-        //                             "numerator" => [
-        //                                 "value" => 75,
-        //                                 "system" => "http://unitsofmeasure.org",
-        //                                 "code" => "mg",
-        //                             ],
-        //                             "denominator" => [
-        //                                 "value" => 1,
-        //                                 "system" => "http://terminology.hl7.org/CodeSystem/v3-orderableDrugForm",
-        //                                 "code" => "TAB",
-        //                             ],
-        //                         ],
-        //                     ],
-        //                     [
-        //                         "itemCodeableConcept" => [
-        //                             "coding" => [
-        //                                 [
-        //                                     "system" => "http://sys-ids.kemkes.go.id/kfa",
-        //                                     "code" => "91000329",
-        //                                     "display" => "Pyrazinamide",
-        //                                 ],
-        //                             ],
-        //                         ],
-        //                         "isActive" => true,
-        //                         "strength" => [
-        //                             "numerator" => [
-        //                                 "value" => 400,
-        //                                 "system" => "http://unitsofmeasure.org",
-        //                                 "code" => "mg",
-        //                             ],
-        //                             "denominator" => [
-        //                                 "value" => 1,
-        //                                 "system" => "http://terminology.hl7.org/CodeSystem/v3-orderableDrugForm",
-        //                                 "code" => "TAB",
-        //                             ],
-        //                         ],
-        //                     ],
-        //                     [
-        //                         "itemCodeableConcept" => [
-        //                             "coding" => [
-        //                                 [
-        //                                     "system" => "http://sys-ids.kemkes.go.id/kfa",
-        //                                     "code" => "91000288",
-        //                                     "display" => "Ethambutol",
-        //                                 ],
-        //                             ],
-        //                         ],
-        //                         "isActive" => true,
-        //                         "strength" => [
-        //                             "numerator" => [
-        //                                 "value" => 275,
-        //                                 "system" => "http://unitsofmeasure.org",
-        //                                 "code" => "mg",
-        //                             ],
-        //                             "denominator" => [
-        //                                 "value" => 1,
-        //                                 "system" => "http://terminology.hl7.org/CodeSystem/v3-orderableDrugForm",
-        //                                 "code" => "TAB",
-        //                             ],
-        //                         ],
-        //                     ],
-        //                 ],
+
         //             ],
         //             "request" => [
         //                 "method" => "POST",
@@ -624,18 +531,18 @@ class EncounterService
         //             ],
         //         ],
         //         [
-        //             "fullUrl" => "urn:uuid:{{MedicationRequest_id}}",
+        //             "fullUrl" => "urn:uuid:". Str::uuid(),
         //             "resource" => [
         //                 "resourceType" => "MedicationRequest",
         //                 "identifier" => [
         //                     [
         //                         "use" => "official",
-        //                         "system" => "http://sys-ids.kemkes.go.id/prescription/{{Org_ID}}",
+        //                         "system" => "http://sys-ids.kemkes.go.id/prescription/" . env('SATU_SEHAT_ORGANIZATION_ID'),
         //                         "value" => "123456788",
         //                     ],
         //                     [
         //                         "use" => "official",
-        //                         "system" => "http://sys-ids.kemkes.go.id/prescription-item/{{Org_ID}}",
+        //                         "system" => "http://sys-ids.kemkes.go.id/prescription-item/" . env('SATU_SEHAT_ORGANIZATION_ID'),
         //                         "value" => "123456788-1",
         //                     ],
         //                 ],
@@ -654,20 +561,20 @@ class EncounterService
         //                 ],
         //                 "priority" => "routine",
         //                 "medicationReference" => [
-        //                     "reference" => "urn:uuid:{{Medication_forRequest}}",
-        //                     "display" => "{{Medication_Name}}",
+        //                     "reference" => "urn:uuid:" . $medication_id,
+        //                     "display" => $itemName,
         //                 ],
         //                 "subject" => [
-        //                     "reference" => "Patient/{{Patient_ID}}",
-        //                     "display" => "{{Patient_Name}}",
+        //                     "reference" => "Patient/" .  $body['patientId'],
+        //                     "display" => $body['patientName'],
         //                 ],
         //                 "encounter" => [
-        //                     "reference" => "urn:uuid:{{Encounter_id}}",
+        //                     "reference" => "urn:uuid:". $uuidEncounter,
         //                 ],
-        //                 "authoredOn" => "2023-08-31T03:27:00+00:00",
+        //                 "authoredOn" => $medication['created_at'],
         //                 "requester" => [
-        //                     "reference" => "Practitioner/{{Practitioner_ID}}",
-        //                     "display" => "{{Practitioner_Name}}",
+        //                     "reference" => "Practitioner/" .  $body['practitionerIhs'],
+        //                     "display" => $body['practitionerName'],
         //                 ],
         //                 "reasonReference" => [
         //                     [
