@@ -715,12 +715,14 @@ class EncounterService
                 ]
             );
             $response = $httpClient->post($url);
-
+            if($response->getStatusCode() != 200){
+                return null;
+            }
             $data = $response->getBody()->getContents();
             return json_decode($data, true);
         } catch (\Throwable $e) {
             return null;
-            dd($e->getMessage());
+            // dd($e->getMessage());
         }
     }
 }

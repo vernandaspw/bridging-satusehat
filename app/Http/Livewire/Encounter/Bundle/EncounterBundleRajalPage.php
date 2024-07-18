@@ -217,6 +217,7 @@ class EncounterBundleRajalPage extends Component
 
     public function kirim($noReg)
     {
+        // $noReg = 'QREG/RJ/202405220220';
         $log_cek = LogEncounter::where('noreg', $noReg)->first();
 
         $status = null;
@@ -457,236 +458,236 @@ class EncounterBundleRajalPage extends Component
             // $this->tanggal();
             return $this->emit('success', $message);
         } catch (\Throwable $e) {
-            dd($e->getMessage());
+            // dd($e->getMessage());
             $errorMessage = 'Coba ulang ' . $e->getMessage();
             return $this->emit('error', $errorMessage);
         }
     }
 
-    public function kirimPerTanggal()
-    {
-        // kirim yang telah discharge dan belum memiliki encounterID
-        $tanggal = $this->tanggal;
-        try {
-            $registrations = RegistrationService::getLastDay($tanggal, 0);
+    // public function kirimPerTanggal()
+    // {
+    //     // kirim yang telah discharge dan belum memiliki encounterID
+    //     $tanggal = $this->tanggal;
+    //     try {
+    //         $registrations = RegistrationService::getLastDay($tanggal, 0);
 
-            // pengiriman data
-            foreach ($registrations as $registration) {
-                // dd($registration);
-                $nik = $registration['nik'];
-                //  CEK NIK PASIEN
-                if (env('IS_PROD')) {
-                    $encounterId = $registration['ss_encounter_id'];
-                } else {
-                    $encounterId = $registration['ss_encounter_id_sanbox'];
-                }
-                // dd('$body');
-                if (!empty($encounterId)) {
-                    if (!empty($nik) && strlen($nik) == 16) {
-                        $patient = PatientService::getRequest('Patient', ['identifier' => $nik]);
-                        // dd($patient);
-                        if ($patient != null) {
-                            if (!empty($patient['entry'])) {
-                                $ihs = $patient['entry'][0]['resource']['id'];
+    //         // pengiriman data
+    //         foreach ($registrations as $registration) {
+    //             // dd($registration);
+    //             $nik = $registration['nik'];
+    //             //  CEK NIK PASIEN
+    //             if (env('IS_PROD')) {
+    //                 $encounterId = $registration['ss_encounter_id'];
+    //             } else {
+    //                 $encounterId = $registration['ss_encounter_id_sanbox'];
+    //             }
+    //             // dd('$body');
+    //             if (!empty($encounterId)) {
+    //                 if (!empty($nik) && strlen($nik) == 16) {
+    //                     $patient = PatientService::getRequest('Patient', ['identifier' => $nik]);
+    //                     // dd($patient);
+    //                     if ($patient != null) {
+    //                         if (!empty($patient['entry'])) {
+    //                             $ihs = $patient['entry'][0]['resource']['id'];
 
-                                $headers = [
-                                    'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
-                                ];
-                                $request = Http::withHeaders($headers)->get(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/pasien/detail/' . $nik);
-                                $response = $request->getBody()->getContents();
-                                $pasienData = json_decode($response, true);
-                                $pasien = $pasienData['data'];
-                                if (env('IS_PROD')) {
-                                    $pasienIHS = $pasien['ihs'];
-                                } else {
-                                    $pasienIHS = $pasien['ihs_sanbox'];
-                                }
-                                if ($ihs != $pasienIHS) {
-                                    // $this->updateIHSPasien($pasien['no_mr'], $ihs);
-                                    try {
-                                        $httpClient = new Client();
-                                        $request = $httpClient->post(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/pasien/ihs/' . $pasien['no_mr'], [
-                                            'headers' => [
-                                                'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
-                                            ],
-                                            'body' => json_encode([
-                                                'kodeIHS' => $ihs,
-                                            ]),
-                                        ]);
-                                        $response = $request->getBody()->getContents();
-                                        $statusCode = $request->getStatusCode();
+    //                             $headers = [
+    //                                 'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
+    //                             ];
+    //                             $request = Http::withHeaders($headers)->get(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/pasien/detail/' . $nik);
+    //                             $response = $request->getBody()->getContents();
+    //                             $pasienData = json_decode($response, true);
+    //                             $pasien = $pasienData['data'];
+    //                             if (env('IS_PROD')) {
+    //                                 $pasienIHS = $pasien['ihs'];
+    //                             } else {
+    //                                 $pasienIHS = $pasien['ihs_sanbox'];
+    //                             }
+    //                             if ($ihs != $pasienIHS) {
+    //                                 // $this->updateIHSPasien($pasien['no_mr'], $ihs);
+    //                                 try {
+    //                                     $httpClient = new Client();
+    //                                     $request = $httpClient->post(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/pasien/ihs/' . $pasien['no_mr'], [
+    //                                         'headers' => [
+    //                                             'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
+    //                                         ],
+    //                                         'body' => json_encode([
+    //                                             'kodeIHS' => $ihs,
+    //                                         ]),
+    //                                     ]);
+    //                                     $response = $request->getBody()->getContents();
+    //                                     $statusCode = $request->getStatusCode();
 
-                                        if ($statusCode != 200) {
-                                            throw new \Exception("Failed to update IHS: " . $statusCode);
-                                        }
-                                    } catch (\Exception $e) {
-                                        dd($e->getMessage());
-                                        // Tangani kesalahan
-                                        return []; // Mengembalikan array kosong jika terjadi kesalahan
-                                    }
-                                }
-                                $ihs_pasien = $ihs;
-                                $nik_pasien = $registration['nik'];
-                                $nama_pasien = $registration['nama_pasien'];
+    //                                     if ($statusCode != 200) {
+    //                                         throw new \Exception("Failed to update IHS: " . $statusCode);
+    //                                     }
+    //                                 } catch (\Exception $e) {
+    //                                     dd($e->getMessage());
+    //                                     // Tangani kesalahan
+    //                                     return []; // Mengembalikan array kosong jika terjadi kesalahan
+    //                                 }
+    //                             }
+    //                             $ihs_pasien = $ihs;
+    //                             $nik_pasien = $registration['nik'];
+    //                             $nama_pasien = $registration['nama_pasien'];
 
-                                // CEK IHS DOKTER
-                                $nik_dokter = $registration['nik_dokter'];
-                                if (!empty($nik_dokter)) {
-                                    $kodeDokter = $registration['kode_dokter'];
-                                    $nama_dokter = $registration['nama_dokter'];
+    //                             // CEK IHS DOKTER
+    //                             $nik_dokter = $registration['nik_dokter'];
+    //                             if (!empty($nik_dokter)) {
+    //                                 $kodeDokter = $registration['kode_dokter'];
+    //                                 $nama_dokter = $registration['nama_dokter'];
 
-                                    $params = [
-                                        'identifier' => $nik_dokter,
-                                    ];
-                                    $token = AccessToken::token();
-                                    $url = ConfigSatuSehat::setUrl() . 'Practitioner';
-                                    if (isset($params['identifier'])) {
-                                        $params['identifier'] = 'https://fhir.kemkes.go.id/id/nik|' . $params['identifier'];
-                                    }
+    //                                 $params = [
+    //                                     'identifier' => $nik_dokter,
+    //                                 ];
+    //                                 $token = AccessToken::token();
+    //                                 $url = ConfigSatuSehat::setUrl() . 'Practitioner';
+    //                                 if (isset($params['identifier'])) {
+    //                                     $params['identifier'] = 'https://fhir.kemkes.go.id/id/nik|' . $params['identifier'];
+    //                                 }
 
-                                    if (!empty($params)) {
-                                        $url .= '?' . http_build_query($params);
-                                    }
-                                    $httpClient = new Client();
-                                    $response = $httpClient->get($url, [
-                                        'headers' => [
-                                            'Authorization' => 'Bearer ' . $token,
-                                            'Accept' => 'application/json',
-                                        ],
-                                    ]);
-                                    if ($response->getStatusCode() == 200) {
+    //                                 if (!empty($params)) {
+    //                                     $url .= '?' . http_build_query($params);
+    //                                 }
+    //                                 $httpClient = new Client();
+    //                                 $response = $httpClient->get($url, [
+    //                                     'headers' => [
+    //                                         'Authorization' => 'Bearer ' . $token,
+    //                                         'Accept' => 'application/json',
+    //                                     ],
+    //                                 ]);
+    //                                 if ($response->getStatusCode() == 200) {
 
-                                        $data = $response->getBody()->getContents();
-                                        $practitionerSatuSehat = json_decode($data, true);
+    //                                     $data = $response->getBody()->getContents();
+    //                                     $practitionerSatuSehat = json_decode($data, true);
 
-                                        if (!empty($practitionerSatuSehat['entry'])) {
-                                            $kodeIHSDokter = $practitionerSatuSehat['entry'][0]['resource']['id'];
-                                            $dokter = Dokter::getByKode($kodeDokter);
+    //                                     if (!empty($practitionerSatuSehat['entry'])) {
+    //                                         $kodeIHSDokter = $practitionerSatuSehat['entry'][0]['resource']['id'];
+    //                                         $dokter = Dokter::getByKode($kodeDokter);
 
-                                            if (!empty($dokter)) {
+    //                                         if (!empty($dokter)) {
 
-                                                // jika kode IHS tidak sama dengan IHS dokter registration
-                                                // maka update data baru
-                                                if (env('IS_PROD')) {
-                                                    $dokterIHS = $dokter['ihs'];
-                                                } else {
-                                                    $dokterIHS = $dokter['ihs_sanbox'];
-                                                }
-                                                if ($kodeIHSDokter != $dokterIHS) {
-                                                    // $this->updateIHSDokter($kodeDokter, $kodeIHSDokter);
-                                                    try {
-                                                        // dd($kodeDokter, $kodeIHS);
-                                                        $httpClient = new Client();
-                                                        $request = $httpClient->post(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/dokter/ihs/' . $kodeDokter, [
-                                                            'headers' => [
-                                                                'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
-                                                            ],
-                                                            'body' => json_encode([
-                                                                'kodeIHS' => $kodeIHSDokter,
-                                                            ]),
-                                                        ]);
-                                                        $response = $request->getBody()->getContents();
-                                                        // dd($response);
-                                                        $statusCode = $request->getStatusCode();
+    //                                             // jika kode IHS tidak sama dengan IHS dokter registration
+    //                                             // maka update data baru
+    //                                             if (env('IS_PROD')) {
+    //                                                 $dokterIHS = $dokter['ihs'];
+    //                                             } else {
+    //                                                 $dokterIHS = $dokter['ihs_sanbox'];
+    //                                             }
+    //                                             if ($kodeIHSDokter != $dokterIHS) {
+    //                                                 // $this->updateIHSDokter($kodeDokter, $kodeIHSDokter);
+    //                                                 try {
+    //                                                     // dd($kodeDokter, $kodeIHS);
+    //                                                     $httpClient = new Client();
+    //                                                     $request = $httpClient->post(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/dokter/ihs/' . $kodeDokter, [
+    //                                                         'headers' => [
+    //                                                             'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
+    //                                                         ],
+    //                                                         'body' => json_encode([
+    //                                                             'kodeIHS' => $kodeIHSDokter,
+    //                                                         ]),
+    //                                                     ]);
+    //                                                     $response = $request->getBody()->getContents();
+    //                                                     // dd($response);
+    //                                                     $statusCode = $request->getStatusCode();
 
-                                                        if ($statusCode != 200) {
-                                                            throw new \Exception("Failed to update IHS: " . $statusCode);
-                                                        }
-                                                    } catch (\Exception $e) {
-                                                        dd($e->getMessage());
-                                                        // Tangani kesalahan
-                                                        return []; // Mengembalikan array kosong jika terjadi kesalahan
-                                                    }
-                                                }
+    //                                                     if ($statusCode != 200) {
+    //                                                         throw new \Exception("Failed to update IHS: " . $statusCode);
+    //                                                     }
+    //                                                 } catch (\Exception $e) {
+    //                                                     dd($e->getMessage());
+    //                                                     // Tangani kesalahan
+    //                                                     return []; // Mengembalikan array kosong jika terjadi kesalahan
+    //                                                 }
+    //                                             }
 
-                                                $ihs_dokter = $kodeIHSDokter;
+    //                                             $ihs_dokter = $kodeIHSDokter;
 
-                                                if (!empty($ihs_dokter)) {
-                                                    // CEK LOKASI
-                                                    $location = Location::where('identifier_value', $registration['RoomCode'])
-                                                        ->orWhere('identifier_value', $registration['RoomID'])
-                                                        ->orWhere('identifier_value', $registration['ServiceUnitID'])
-                                                        ->first();
-                                                    if (!empty($location)) {
-                                                        $location_id = $location->location_id;
-                                                        $location_name = $location->name;
-                                                        $organization_id = $location->organization_id;
-                                                        $noReg = $registration['no_registrasi'];
+    //                                             if (!empty($ihs_dokter)) {
+    //                                                 // CEK LOKASI
+    //                                                 $location = Location::where('identifier_value', $registration['RoomCode'])
+    //                                                     ->orWhere('identifier_value', $registration['RoomID'])
+    //                                                     ->orWhere('identifier_value', $registration['ServiceUnitID'])
+    //                                                     ->first();
+    //                                                 if (!empty($location)) {
+    //                                                     $location_id = $location->location_id;
+    //                                                     $location_name = $location->name;
+    //                                                     $organization_id = $location->organization_id;
+    //                                                     $noReg = $registration['no_registrasi'];
 
-                                                        $diagnosaUtama = null;
-                                                        foreach ($registration['diagnosas'] as $diagnosa) {
-                                                            if ($diagnosa['pdiag_tipe'] == 'UTAMA') {
-                                                                $diagnosaUtama = $diagnosa;
-                                                            }
-                                                        };
+    //                                                     $diagnosaUtama = null;
+    //                                                     foreach ($registration['diagnosas'] as $diagnosa) {
+    //                                                         if ($diagnosa['pdiag_tipe'] == 'UTAMA') {
+    //                                                             $diagnosaUtama = $diagnosa;
+    //                                                         }
+    //                                                     };
 
-                                                        $body = [
-                                                            'kodeReg' => $noReg,
-                                                            'status' => 'arrived',
-                                                            'patientId' => $ihs_pasien,
-                                                            'patientName' => $nama_pasien,
-                                                            'practitionerIhs' => $ihs_dokter,
-                                                            'practitionerName' => $nama_dokter,
-                                                            'organizationId' => $organization_id,
-                                                            'locationId' => $location_id,
-                                                            'locationName' => $location_name,
-                                                            'statusHistory' => 'arrived',
-                                                            'RegistrationDateTime' => $registration['RegistrationDateTime'],
-                                                            'DischargeDateTime' => $registration['DischargeDateTime'],
-                                                            'observationNadi' => $registration['observationNadi'],
-                                                            'diagnosa_utama' => $diagnosaUtama ? $diagnosaUtama : null,
-                                                            'diagnosas' => $registration['diagnosas'],
-                                                            'procedures' => $registration['procedures'],
-                                                        ];
-                                                        dd($body);
-                                                        try {
-                                                            // send API
-                                                            // jika
+    //                                                     $body = [
+    //                                                         'kodeReg' => $noReg,
+    //                                                         'status' => 'arrived',
+    //                                                         'patientId' => $ihs_pasien,
+    //                                                         'patientName' => $nama_pasien,
+    //                                                         'practitionerIhs' => $ihs_dokter,
+    //                                                         'practitionerName' => $nama_dokter,
+    //                                                         'organizationId' => $organization_id,
+    //                                                         'locationId' => $location_id,
+    //                                                         'locationName' => $location_name,
+    //                                                         'statusHistory' => 'arrived',
+    //                                                         'RegistrationDateTime' => $registration['RegistrationDateTime'],
+    //                                                         'DischargeDateTime' => $registration['DischargeDateTime'],
+    //                                                         'observationNadi' => $registration['observationNadi'],
+    //                                                         'diagnosa_utama' => $diagnosaUtama ? $diagnosaUtama : null,
+    //                                                         'diagnosas' => $registration['diagnosas'],
+    //                                                         'procedures' => $registration['procedures'],
+    //                                                     ];
+    //                                                     dd($body);
+    //                                                     try {
+    //                                                         // send API
+    //                                                         // jika
 
-                                                            $resultApi = EncounterService::PostEncounterCondition($body);
-                                                            if (!empty($resultApi['entry'][0]['response']['resourceID'])) {
-                                                                $encounterID = $resultApi['entry'][0]['response']['resourceID'];
-                                                            } else {
-                                                                $url = $resultApi['entry'][0]['response']['location'];
-                                                                $uuid = explode('/', parse_url($url, PHP_URL_PATH))[4];
-                                                                $encounterID = $uuid;
-                                                            }
+    //                                                         $resultApi = EncounterService::PostEncounterCondition($body);
+    //                                                         if (!empty($resultApi['entry'][0]['response']['resourceID'])) {
+    //                                                             $encounterID = $resultApi['entry'][0]['response']['resourceID'];
+    //                                                         } else {
+    //                                                             $url = $resultApi['entry'][0]['response']['location'];
+    //                                                             $uuid = explode('/', parse_url($url, PHP_URL_PATH))[4];
+    //                                                             $encounterID = $uuid;
+    //                                                         }
 
-                                                            if (empty($encounterID)) {
-                                                                $errorMessage = 'EncounterID tidak valid';
-                                                                return $this->emit('error', $errorMessage);
-                                                            }
+    //                                                         if (empty($encounterID)) {
+    //                                                             $errorMessage = 'EncounterID tidak valid';
+    //                                                             return $this->emit('error', $errorMessage);
+    //                                                         }
 
-                                                            RegistrationService::updateEncounterId($noReg, $encounterID);
-                                                            $this->fetchData();
+    //                                                         RegistrationService::updateEncounterId($noReg, $encounterID);
+    //                                                         $this->fetchData();
 
-                                                        } catch (\Throwable $e) {
-                                                            dd($e->getMessage());
-                                                            $errorMessage = 'Coba ulang ' . $e->getMessage();
-                                                            return $this->emit('error', $errorMessage);
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+    //                                                     } catch (\Throwable $e) {
+    //                                                         dd($e->getMessage());
+    //                                                         $errorMessage = 'Coba ulang ' . $e->getMessage();
+    //                                                         return $this->emit('error', $errorMessage);
+    //                                                     }
+    //                                                 }
+    //                                             }
+    //                                         }
+    //                                     }
+    //                                 }
+    //                             }
+    //                         }
+    //                     }
 
-                    }
-                }
-            }
-            $message = 'Bundle Encounter data has been created successfully.';
-            return $this->emit('success', $message);
-        } catch (\Exception $e) {
-            dd($e);
-            // Tangani kesalahan
-            return response()->json(['error' => 'Failed to fetch data'], 500);
-            // return view('error-view', ['error' => 'Failed to fetch data']);
-        }
+    //                 }
+    //             }
+    //         }
+    //         $message = 'Bundle Encounter data has been created successfully.';
+    //         return $this->emit('success', $message);
+    //     } catch (\Exception $e) {
+    //         dd($e);
+    //         // Tangani kesalahan
+    //         return response()->json(['error' => 'Failed to fetch data'], 500);
+    //         // return view('error-view', ['error' => 'Failed to fetch data']);
+    //     }
 
-    }
+    // }
 
     public function kirimPerTanggal2()
     {
@@ -782,62 +783,65 @@ class EncounterBundleRajalPage extends Component
                                                 ];
                                                 // dd($body);
                                                 $resultApi = EncounterService::PostEncounterCondition($body);
-                                                if (!empty($resultApi['entry'][0]['response']['resourceID'])) {
-                                                    $encounterID = $resultApi['entry'][0]['response']['resourceID'];
-                                                } else {
-                                                    $url = $resultApi['entry'][0]['response']['location'];
-                                                    $uuid = explode('/', parse_url($url, PHP_URL_PATH))[4];
-                                                    $encounterID = $uuid;
-                                                }
-                                                // dd($encounterID);
+                                                if ($resultApi) {
 
-                                                if ($encounterID) {
-                                                    //    $cek =  RegistrationService::updateEncounterId($noReg, $encounterID);
-                                                    //    dd($cek);
-                                                    if (env('IS_PROD') == false) {
-                                                        $status = 0;
+                                                    if (!empty($resultApi['entry'][0]['response']['resourceID'])) {
+                                                        $encounterID = $resultApi['entry'][0]['response']['resourceID'];
                                                     } else {
-                                                        $status = 1;
+                                                        $url = $resultApi['entry'][0]['response']['location'];
+                                                        $uuid = explode('/', parse_url($url, PHP_URL_PATH))[4];
+                                                        $encounterID = $uuid;
                                                     }
+                                                    // dd($encounterID);
 
-                                                    // try {
-                                                    // dd($kodeDokter, $kodeIHS);
-                                                    $httpClient = new Client([
-                                                        'headers' => [
-                                                            'Content-Type' => 'application/json',
-                                                            'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
-                                                        ],
-                                                        'body' => json_encode([
-                                                            'noreg' => $noReg,
-                                                            'encounter_id' => $encounterID,
-                                                            'isProd' => $status,
-                                                        ]),
-                                                    ]);
+                                                    if ($encounterID) {
+                                                        //    $cek =  RegistrationService::updateEncounterId($noReg, $encounterID);
+                                                        //    dd($cek);
+                                                        if (env('IS_PROD') == false) {
+                                                            $status = 0;
+                                                        } else {
+                                                            $status = 1;
+                                                        }
 
-                                                    $request = $httpClient->post(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/registration/update/encounterid');
-                                                    $response = $request->getBody()->getContents();
+                                                        // try {
+                                                        // dd($kodeDokter, $kodeIHS);
+                                                        $httpClient = new Client([
+                                                            'headers' => [
+                                                                'Content-Type' => 'application/json',
+                                                                'X-TOKEN' => env('BRIDGING_SATUSEHAT_SERVICE_TOKEN'),
+                                                            ],
+                                                            'body' => json_encode([
+                                                                'noreg' => $noReg,
+                                                                'encounter_id' => $encounterID,
+                                                                'isProd' => $status,
+                                                            ]),
+                                                        ]);
 
-                                                    $statusCode = $request->getStatusCode();
-                                                    // dd($statusCode);
-                                                    if ($statusCode == 200) {
-                                                        $result = json_decode($response, true);
-                                                        // dd($result);
-                                                        // return $result;
+                                                        $request = $httpClient->post(env('BRIDGING_SATUSEHAT_SERVICE_URL') . '/registration/update/encounterid');
+                                                        $response = $request->getBody()->getContents();
+
+                                                        $statusCode = $request->getStatusCode();
+                                                        // dd($statusCode);
+                                                        if ($statusCode == 200) {
+                                                            $result = json_decode($response, true);
+                                                            // dd($result);
+                                                            // return $result;
+                                                        }
+                                                        // return null;
+                                                        // else {
+                                                        //     // Tangani kesalahan jika status bukan 200 OK
+                                                        //     // Misalnya, lempar Exception dengan pesan kesalahan yang sesuai
+                                                        //     throw new \Exception("Failed to update IHS: " . $statusCode);
+                                                        // }
+                                                        // } catch (\Exception $e) {
+                                                        //     dd($e->getMessage());
+                                                        //     // Tangani kesalahan
+                                                        //     return null; // Mengembalikan array kosong jika terjadi kesalahan
+                                                        // }
+
                                                     }
-                                                    // return null;
-                                                    // else {
-                                                    //     // Tangani kesalahan jika status bukan 200 OK
-                                                    //     // Misalnya, lempar Exception dengan pesan kesalahan yang sesuai
-                                                    //     throw new \Exception("Failed to update IHS: " . $statusCode);
-                                                    // }
-                                                    // } catch (\Exception $e) {
-                                                    //     dd($e->getMessage());
-                                                    //     // Tangani kesalahan
-                                                    //     return null; // Mengembalikan array kosong jika terjadi kesalahan
-                                                    // }
-
                                                 }
-                                            }else{
+                                            } else {
                                                 $log_cek = LogEncounter::where('noreg', $noReg)->first();
                                                 $errorMessage = 'ID location is not available.';
                                                 if ($log_cek) {
