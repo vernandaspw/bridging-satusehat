@@ -217,7 +217,8 @@ class EncounterBundleRajalPage extends Component
 
     public function kirim($noReg)
     {
-        // $noReg = 'QREG/RJ/202405220220';
+        // $noReg = 'QREG/RJ/202403210274';
+        // dd($noReg);
         $log_cek = LogEncounter::where('noreg', $noReg)->first();
 
         $status = null;
@@ -464,8 +465,8 @@ class EncounterBundleRajalPage extends Component
         }
     }
 
-    // public function kirimPerTanggal()
-    // {
+    public function kirimPerTanggal()
+    {
     //     // kirim yang telah discharge dan belum memiliki encounterID
     //     $tanggal = $this->tanggal;
     //     try {
@@ -687,7 +688,7 @@ class EncounterBundleRajalPage extends Component
     //         // return view('error-view', ['error' => 'Failed to fetch data']);
     //     }
 
-    // }
+    }
 
     public function kirimPerTanggal2()
     {
