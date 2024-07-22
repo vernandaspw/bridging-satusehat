@@ -957,7 +957,7 @@ class EncounterBundleRajalPage extends Component
             return $this->emit('error', $e->getMessage());
             // dd($e);
             // Tangani kesalahan
-            return response()->json(['error' => $e->getMessage()], 500);
+            // return response()->json(['error' => $e->getMessage()], 500);
             // return view('error-view', ['error' => 'Failed to fetch data']);
         }
 
